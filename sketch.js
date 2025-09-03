@@ -2,11 +2,11 @@ let gridSize = 8;
 let cellSize = 80;
 
 let rooms = [];           // finalized rooms
-let roomTiles = [];       // current room floor tiles
+let roomTiles = [];      
 let objects = [];
 let decorations = [];
 
-let mode = "room";        // room | place | final
+let mode = "room";       
 let selectedRoom = null;  // for reform
 let reformingRoom = null;
 
@@ -109,7 +109,7 @@ function isOverlapping(newTiles) {
 function finalizeRoom() {
   if (roomTiles.length > 0) {
    if (reformingRoom) {
-  // ✅ update without overlap check (replacing itself)
+  //  update without overlap check (replacing itself)
   reformingRoom.tiles = [...roomTiles];
   reformingRoom.objects = [...objects];
   reformingRoom.decorations = [...decorations];
@@ -197,7 +197,7 @@ function drawCorridors() {
   }
 }
 
-// === MiniMap ===
+// MiniMap 
 function drawMiniMap() {
   fill(20, 180);
   stroke(200);
@@ -220,7 +220,7 @@ function drawMiniMap() {
     drawRoomWithWalls(room.tiles, room.floorColor, room.wallColor);
 
     if (points.length > 2) {
-      // === side lengths in grid blocks ===
+      //  side lengths in grid blocks 
       for (let i = 0; i < points.length; i++) {
         let p1 = points[i];
         let p2 = points[(i+1) % points.length];
@@ -229,7 +229,7 @@ function drawMiniMap() {
         let dy = (p2.y - p1.y) / cellSize;
         let length = sqrt(dx*dx + dy*dy).toFixed(1);
 
-        // midpoint of the side
+       
         let mx = (p1.x + p2.x) / 2;
         let my = (p1.y + p2.y) / 2;
 
@@ -240,7 +240,7 @@ function drawMiniMap() {
         text(length, mx, my);
       }
 
-      // === corner angles ===
+      // corner angles 
       for (let i = 0; i < points.length; i++) {
         let prev = points[(i - 1 + points.length) % points.length];
         let curr = points[i];
@@ -265,7 +265,7 @@ function drawMiniMap() {
 }
 
 
-// === Room geometry helpers ===
+//  Room geometry helpers 
 function getRoomPoints(tiles) {
   let points = tiles.map(t => createVector(t.c * cellSize + cellSize/2, t.r * cellSize + cellSize/2));
   if (points.length > 2) {
@@ -427,7 +427,7 @@ function styleButton(btn) {
   btn.style("cursor", "pointer");
 }
 
-// === Mouse input ===
+//  Mouse input 
 function mousePressed() {
   if (mode === "room") {
     let c = floor((mouseX - (width/2 - (gridSize*cellSize)/2)) / cellSize);
@@ -502,7 +502,7 @@ function mouseReleased() {
       cost += draggedItem.cost;
       used++;
     } else {
-      console.log("❌ Can't place object outside the room");
+      console.log(" Can't place object outside the room");
     }
   }
   draggedItem = null;
