@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>2D Room Builder</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      font-family: Arial, sans-serif;
+      margin-top: 20px;
+    }
+    #inventory, #stats {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 150px;
+      height: 400px;
+    }
+    #inventory .item {
+      border: 1px solid #000;
+      padding: 5px;
+      margin: 5px 0;
+      cursor: grab;
+      text-align: center;
+      background: #f0f0f0;
+    }
+    #grid-container {
+      position: relative;
+    }
+    canvas {
+      border: 1px solid black;
+    }
+    button {
+      margin-top: 10px;
+      width: 100%;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="sketch.js"></script>
+</head>
+<body>
+    
+  <!-- Inventory -->
+  
