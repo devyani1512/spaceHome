@@ -40,31 +40,33 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   textAlign(CENTER, CENTER);
 
-  miniMapX = width - miniMapW - 20;
-  miniMapY = height - miniMapH - 20;
+  // UI reserved space = bottom 80px
+  let uiY = height - 70;
 
   confirmBtn = createButton("Confirm Layout → Place Objects");
   styleButton(confirmBtn);
-  confirmBtn.position(width / 2 - 300, height - 50);
+  confirmBtn.position(width/2 - 300, uiY);
   confirmBtn.mousePressed(() => {
     if (roomTiles.length > 0) mode = "place";
   });
 
   finalizeBtn = createButton("Finalize Room");
   styleButton(finalizeBtn);
-  finalizeBtn.position(width / 2 - 80, height - 50);
+  finalizeBtn.position(width/2 - 80, uiY);
   finalizeBtn.mousePressed(() => finalizeRoom());
 
   newRoomBtn = createButton("Start New Room");
   styleButton(newRoomBtn);
-  newRoomBtn.position(width / 2 + 180, height - 50);
+  newRoomBtn.position(width/2 + 180, uiY);
   newRoomBtn.mousePressed(() => startNewRoom());
 
   reformBtn = createButton("Reform Selected Room");
   styleButton(reformBtn);
-  reformBtn.hide(); // only show when a room is clicked
+  reformBtn.position(width/2 + 400, uiY);
+  reformBtn.hide();
   reformBtn.mousePressed(() => reformRoom());
 }
+
 
 function draw() {
   background(0);
@@ -90,10 +92,12 @@ function draw() {
   } else if (mode === "final") {
     drawAllRooms();
     drawCorridors();
+    drawLifeSupport();   // ✅ show life support in control room
     drawStats();
     drawMiniMap();
   }
 }
+
 
 function isOverlapping(newTiles) {
   for (let room of rooms) {
@@ -106,33 +110,42 @@ function isOverlapping(newTiles) {
   return false;
 }
 
+// === Control Room variables ===
+let controlRoom = null;
+let lifeSupportMachine = null;
+
+// modified finalizeRoom to mark first room as Control Room
 function finalizeRoom() {
   if (roomTiles.length > 0) {
-   if (reformingRoom) {
-  // ✅ update without overlap check (replacing itself)
-  reformingRoom.tiles = [...roomTiles];
-  reformingRoom.objects = [...objects];
-  reformingRoom.decorations = [...decorations];
-  reformingRoom.floorColor = [...floorColor];
-  reformingRoom.wallColor = [...wallColor];
-  reformingRoom = null;
-} else {
-  if ((isOverlapping(roomTiles))) {
-    alert("⚠️ Cannot finalize: room overlaps with an existing one.");
-    return;
-  }
-  let room = {
-    tiles: [...roomTiles],
-    objects: [...objects],
-    decorations: [...decorations],
-    floorColor: [...floorColor],
-    wallColor: [...wallColor],
-    offsetX: random(100, 300),
-    offsetY: random(100, 300)
-  };
-  rooms.push(room);
-}
+    if (reformingRoom) {
+      reformingRoom.tiles = [...roomTiles];
+      reformingRoom.objects = [...objects];
+      reformingRoom.decorations = [...decorations];
+      reformingRoom.floorColor = [...floorColor];
+      reformingRoom.wallColor = [...wallColor];
+      reformingRoom = null;
+    } else {
+      if ((isOverlapping(roomTiles))) {
+        alert("⚠️ Cannot finalize: room overlaps with an existing one.");
+        return;
+      }
+      let room = {
+        tiles: [...roomTiles],
+        objects: [...objects],
+        decorations: [...decorations],
+        floorColor: [...floorColor],
+        wallColor: [...wallColor],
+        offsetX: random(100, 300),//to place new rooms away from center in order to remove overlapping
+        offsetY: random(100, 300)
+      };
 
+      rooms.push(room);
+
+      // ✅ first room becomes Control Room
+      if (!controlRoom) {
+        controlRoom = room;
+      }
+    }
 
     mode = "final";
     roomTiles = [];
@@ -141,6 +154,7 @@ function finalizeRoom() {
     reformBtn.hide();
   }
 }
+
 
 function startNewRoom() {
   if (mode === "final") {
@@ -183,19 +197,48 @@ function drawAllRooms() {
 
 // === Corridors (lines between room centers) ===
 function drawCorridors() {
-  for (let i = 0; i < rooms.length; i++) {
-    for (let j = i+1; j < rooms.length; j++) {
-      let c1 = getRoomCenter(rooms[i].tiles).add(rooms[i].offsetX, rooms[i].offsetY);
-      let c2 = getRoomCenter(rooms[j].tiles).add(rooms[j].offsetX, rooms[j].offsetY);
-      let d = dist(c1.x, c1.y, c2.x, c2.y);
-      if (d < 250) {
-        stroke(255, 200, 0);
-        strokeWeight(4);
-        line(c1.x, c1.y, c2.x, c2.y);
-      }
-    }
+  if (!controlRoom) return;
+
+  let c1 = getRoomCenter(controlRoom.tiles);
+  let cx1 = c1.x + controlRoom.offsetX;
+  let cy1 = c1.y + controlRoom.offsetY;
+
+  stroke(200);
+  strokeWeight(2);
+  drawingContext.setLineDash([5, 5]); // dotted line
+
+  for (let room of rooms) {
+    if (room === controlRoom) continue; // skip control room itself
+
+    let c2 = getRoomCenter(room.tiles);
+    let cx2 = c2.x + room.offsetX;
+    let cy2 = c2.y + room.offsetY;
+
+    line(cx1, cy1, cx2, cy2);
+  }
+
+  drawingContext.setLineDash([]); // reset dash
+}
+
+
+function drawLifeSupport() {
+  if (controlRoom) {
+    // always compute from control room’s current center
+    let c = getRoomCenter(controlRoom.tiles);
+    let cx = c.x + controlRoom.offsetX;
+    let cy = c.y + controlRoom.offsetY;
+
+    fill("red");
+    noStroke();
+    ellipse(cx, cy, 40, 40);
+
+    fill(255);
+    textSize(12);
+    textAlign(CENTER, CENTER);
+    text("Life Support", cx, cy - 30);
   }
 }
+
 
 // === MiniMap ===
 function drawMiniMap() {
@@ -272,7 +315,7 @@ function getRoomPoints(tiles) {
     let center = createVector(0, 0);
     for (let p of points) center.add(p);
     center.div(points.length);
-    points.sort((a, b) => atan2(a.y - center.y, a.x - center.x) - atan2(b.y - center.y, b.x - center.x));
+    points.sort((a, b) => atan2(a.y - center.y, a.x - center.x) - atan2(b.y - center.y, b.x - center.x));//This ensures the vertices are ordered circularly (so the polygon doesn’t “zig-zag” when drawing).
   }
   return points;
 }
@@ -284,7 +327,7 @@ function getRoomCenter(tiles) {
   center.div(points.length || 1);
   return center;
 }
-
+//room walls function
 function drawRoomWithWalls(tiles, floorCol, wallCol) {
   let points = getRoomPoints(tiles);
   if (points.length > 2) {
@@ -309,7 +352,7 @@ function drawRoomWithWalls(tiles, floorCol, wallCol) {
     }
   }
 }
-
+//room outline function
 function drawRoomOutline(tiles) {
   let points = getRoomPoints(tiles);
   if (points.length > 2) {
@@ -325,15 +368,27 @@ function drawRoomOutline(tiles) {
 // === UI & Inventory ===
 function drawGrid() {
   stroke(100, 120);
+
+  let gridW = gridSize * cellSize;
+  let gridH = gridSize * cellSize;
+
+  // Reserve top (title) and bottom (buttons) areas
+  let topMargin = 100;
+  let bottomMargin = 100;
+
+  let offsetX = (width - gridW) / 2;
+  let offsetY = (height - gridH - bottomMargin - topMargin) / 2 + topMargin;
+
   for (let r = 0; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
-      let x = c * cellSize + width/2 - (gridSize*cellSize)/2;
-      let y = r * cellSize + height/2 - (gridSize*cellSize)/2;
+      let x = c * cellSize + offsetX;
+      let y = r * cellSize + offsetY;
       noFill();
       rect(x, y, cellSize, cellSize);
     }
   }
 }
+
 
 function highlightSelectedTiles() {
   fill(0, 150, 255, 120);
@@ -359,10 +414,10 @@ function drawObjects(objs) {
 
 function drawInventory() {
   let invX = width - 250;
-  let invY = 350; // moved lower
+  let invY = 150; // start lower (below title)
 
   fill(0, 180);
-  rect(invX, invY, 220, 250, 10);
+  rect(invX, invY, 220, 300, 10);
   fill(255);
   textSize(16);
   textAlign(LEFT, TOP);
@@ -379,24 +434,19 @@ function drawInventory() {
 }
 
 function drawStats() {
+  let statsX = width - 250;
+  let statsY = 20;
+
   fill(0, 180);
-  rect(width-200, 20, 170, 120, 10);
+  rect(statsX, statsY, 220, 120, 10);
   fill(255);
   textAlign(LEFT, TOP);
   textSize(14);
-  text(`⚡ Energy: ${energy}`, width-190, 30);
-  text(`💰 Cost: ${cost}`, width-190, 50);
-  text(`🛠 Used: ${used}`, width-190, 70);
-
-  let totalTiles = roomTiles.length || 1;
-  let freePercent = 100 - (used / totalTiles) * 100;
-  text(`📐 Free: ${freePercent.toFixed(1)}%`, width-190, 90);
-
-  if (freePercent > 60) {
-    fill("red");
-    text("⚠ Consider reforming room", width-190, 110);
-  }
+  text(`⚡ Energy: ${energy}`, statsX + 10, statsY + 10);
+  text(`💰 Cost: ${cost}`, statsX + 10, statsY + 30);
+  text(`🛠 Used: ${used}`, statsX + 10, statsY + 50);
 }
+
 
 function drawTitle() {
   textAlign(LEFT, TOP);
@@ -425,6 +475,7 @@ function styleButton(btn) {
   btn.style("border-radius", "8px");
   btn.style("font-family", "Orbitron");
   btn.style("cursor", "pointer");
+  btn.style("width", "200px"); 
 }
 
 // === Mouse input ===
@@ -502,7 +553,7 @@ function mouseReleased() {
       cost += draggedItem.cost;
       used++;
     } else {
-      console.log("❌ Can't place object outside the room");
+      console.log(" Can't place object outside the room");
     }
   }
   draggedItem = null;
