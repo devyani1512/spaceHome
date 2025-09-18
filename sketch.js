@@ -15,11 +15,53 @@ let draggedItem = null;
 let draggingObject = null;
 let draggingRoom = null;
 
+//for dropdown inventory
+let showDropdown = false;
+let dropdownItem = null;
+let dropdownX = 0;
+let dropdownY = 0;
+
 const inventory = [
-  { name: "Treadmill", energy: 10, cost: 20 },
-  { name: "Exercise Bike", energy: 15, cost: 25 },
-  { name: "Medical Scanner", energy: 20, cost: 30 },
-  { name: "Defibrillator", energy: 5, cost: 15 }
+  {
+    name: "Treadmill",
+    energy: 10,
+    cost: 20,
+    info: {
+      description: "Advanced zero-gravity treadmill for cardiovascular fitness",
+      specs: ["Speed: 0-20 km/h", "Weight capacity: 150kg", "Compact design"],
+      benefits: ["Maintains bone density", "Cardiovascular health"]
+    }
+  },
+  {
+    name: "Exercise Bike",
+    energy: 15,
+    cost: 25,
+    info: {
+      description: "Stationary bike designed for space station use",
+      specs: ["Resistance levels: 20", "Digital display", "Heart rate monitor"],
+      benefits: ["Lower body strength", "Endurance training"]
+    }
+  },
+  {
+    name: "Medical Scanner",
+    energy: 20,
+    cost: 30,
+    info: {
+      description: "Advanced full-body diagnostic scanner for crew health monitoring",
+      specs: ["3D imaging capability", "Real-time vital signs", "AI-assisted diagnosis"],
+      benefits: ["Early disease detection", "Non-invasive scanning"]
+    }
+  },
+  {
+    name: "Defibrillator",
+    energy: 5,
+    cost: 15,
+    info: {
+      description: "Portable automated external defibrillator for cardiac emergencies",
+      specs: ["Voice-guided operation", "Biphasic waveform", "Pediatric capable"],
+      benefits: ["Life-saving intervention", "Easy to operate"]
+    }
+  }
 ];
 
 let bgImg, paintingImg;
@@ -45,24 +87,24 @@ function setup() {
 
   confirmBtn = createButton("Confirm Layout → Place Objects");
   styleButton(confirmBtn);
-  confirmBtn.position(width/2 - 300, uiY);
+  confirmBtn.position(width / 2 - 300, uiY);
   confirmBtn.mousePressed(() => {
     if (roomTiles.length > 0) mode = "place";
   });
 
   finalizeBtn = createButton("Finalize Room");
   styleButton(finalizeBtn);
-  finalizeBtn.position(width/2 - 80, uiY);
+  finalizeBtn.position(width / 2 - 80, uiY);
   finalizeBtn.mousePressed(() => finalizeRoom());
 
   newRoomBtn = createButton("Start New Room");
   styleButton(newRoomBtn);
-  newRoomBtn.position(width/2 + 180, uiY);
+  newRoomBtn.position(width / 2 + 180, uiY);
   newRoomBtn.mousePressed(() => startNewRoom());
 
   reformBtn = createButton("Reform Selected Room");
   styleButton(reformBtn);
-  reformBtn.position(width/2 + 400, uiY);
+  reformBtn.position(width / 2 + 400, uiY);
   reformBtn.hide();
   reformBtn.mousePressed(() => reformRoom());
 }
@@ -161,8 +203,8 @@ function startNewRoom() {
     roomTiles = [];
     objects = [];
     decorations = [];
-    floorColor = [random(80,200), random(120,200), random(200,255), 180];
-    wallColor = [random(20,80), random(40,100), random(150,220), 220];
+    floorColor = [random(80, 200), random(120, 200), random(200, 255), 180];
+    wallColor = [random(20, 80), random(40, 100), random(150, 220), 220];
     energy = 100;
     cost = 200;
     used = 0;
@@ -250,7 +292,7 @@ function drawMiniMap() {
   noStroke();
   textSize(14);
   textAlign(CENTER, TOP);
-  text("Mini-map", miniMapX + miniMapW/2, miniMapY + 5);
+  text("Mini-map", miniMapX + miniMapW / 2, miniMapY + 5);
 
   push();
   translate(miniMapX + 10, miniMapY + 30);
@@ -266,11 +308,11 @@ function drawMiniMap() {
       // === side lengths in grid blocks ===
       for (let i = 0; i < points.length; i++) {
         let p1 = points[i];
-        let p2 = points[(i+1) % points.length];
+        let p2 = points[(i + 1) % points.length];
 
         let dx = (p2.x - p1.x) / cellSize;
         let dy = (p2.y - p1.y) / cellSize;
-        let length = sqrt(dx*dx + dy*dy).toFixed(1);
+        let length = sqrt(dx * dx + dy * dy).toFixed(1);
 
         // midpoint of the side
         let mx = (p1.x + p2.x) / 2;
@@ -310,7 +352,7 @@ function drawMiniMap() {
 
 // === Room geometry helpers ===
 function getRoomPoints(tiles) {
-  let points = tiles.map(t => createVector(t.c * cellSize + cellSize/2, t.r * cellSize + cellSize/2));
+  let points = tiles.map(t => createVector(t.c * cellSize + cellSize / 2, t.r * cellSize + cellSize / 2));
   if (points.length > 2) {
     let center = createVector(0, 0);
     for (let p of points) center.add(p);
@@ -322,7 +364,7 @@ function getRoomPoints(tiles) {
 
 function getRoomCenter(tiles) {
   let points = getRoomPoints(tiles);
-  let center = createVector(0,0);
+  let center = createVector(0, 0);
   for (let p of points) center.add(p);
   center.div(points.length || 1);
   return center;
@@ -340,7 +382,7 @@ function drawRoomWithWalls(tiles, floorCol, wallCol) {
     let wallHeight = 50;
     for (let i = 0; i < points.length; i++) {
       let p1 = points[i];
-      let p2 = points[(i+1)%points.length];
+      let p2 = points[(i + 1) % points.length];
       fill(wallCol);
       stroke(0, 100, 200);
       beginShape();
@@ -394,8 +436,8 @@ function highlightSelectedTiles() {
   fill(0, 150, 255, 120);
   noStroke();
   for (let t of roomTiles) {
-    let x = t.c * cellSize + width/2 - (gridSize*cellSize)/2;
-    let y = t.r * cellSize + height/2 - (gridSize*cellSize)/2;
+    let x = t.c * cellSize + width / 2 - (gridSize * cellSize) / 2;
+    let y = t.r * cellSize + height / 2 - (gridSize * cellSize) / 2;
     rect(x, y, cellSize, cellSize, 5);
   }
 }
@@ -412,6 +454,68 @@ function drawObjects(objs) {
   }
 }
 
+function drawDropdown() {
+  let dropW = 280;
+  let dropH = 200;
+
+  // Adjust position to stay on screen
+  let finalX = min(dropdownX, width - dropW - 10);
+  let finalY = min(dropdownY, height - dropH - 10);
+
+  // Background
+  fill(20, 20, 40, 240);
+  stroke(0, 150, 255);
+  strokeWeight(2);
+  rect(finalX, finalY, dropW, dropH, 10);
+
+  // Title
+  fill(0, 200, 255);
+  noStroke();
+  textAlign(LEFT, TOP);
+  textSize(16);
+  text(dropdownItem.name + " - Details", finalX + 15, finalY + 15);
+
+  // Description
+  fill(255);
+  textSize(12);
+  text(dropdownItem.info.description, finalX + 15, finalY + 40, dropW - 30, 30);
+
+  // Specifications
+  fill(100, 255, 100);
+  textSize(14);
+  text("Specifications:", finalX + 15, finalY + 75);
+
+  fill(255);
+  textSize(11);
+  let specY = finalY + 95;
+  for (let spec of dropdownItem.info.specs) {
+    text("• " + spec, finalX + 20, specY);
+    specY += 15;
+  }
+
+  // Benefits
+  fill(255, 200, 100);
+  textSize(14);
+  text("Benefits:", finalX + 15, specY + 10);
+
+  fill(255);
+  textSize(11);
+  let benefitY = specY + 30;
+  for (let benefit of dropdownItem.info.benefits) {
+    text("• " + benefit, finalX + 20, benefitY);
+    benefitY += 15;
+  }
+
+  // Close button
+  fill(255, 100, 100);
+  noStroke();
+  rect(finalX + dropW - 30, finalY + 5, 20, 20, 3);
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(12);
+  text("×", finalX + dropW - 20, finalY + 15);
+}
+
 function drawInventory() {
   let invX = width - 250;
   let invY = 150; // start lower (below title)
@@ -422,15 +526,62 @@ function drawInventory() {
   textSize(16);
   textAlign(LEFT, TOP);
   text("Inventory", invX + 10, invY + 5);
-  for (let i=0; i<inventory.length; i++) {
+
+  for (let i = 0; i < inventory.length; i++) {
     let item = inventory[i];
-    let y = invY + 20 + i*50;
+    let y = invY + 20 + i * 50;
     fill(50, 100, 200, 180);
     rect(invX + 10, y, 200, 35, 6);
+
+    // Add info button for Treadmill and Exercise Bike
+    if (item.info) {
+      fill(0, 150, 255);
+      ellipse(invX + 190, y + 10, 16, 16);
+      fill(255);
+      textAlign(CENTER, CENTER);
+      textSize(10);
+      text("i", invX + 190, y + 10);
+    }
+
     fill(255);
+    textAlign(LEFT, TOP);
     textSize(12);
-    text(`${item.name} (E:${item.energy} C:${item.cost})`, invX + 20, y+20);
+    text(`${item.name} (E:${item.energy} C:${item.cost})`, invX + 20, y + 20);
   }
+
+  // Draw dropdown if active
+  if (showDropdown && dropdownItem) {
+    drawDropdown();
+  }
+}
+
+function handleInventoryClick(mx, my) {
+  let invX = width - 250;
+  let invY = 150;
+
+  for (let i = 0; i < inventory.length; i++) {
+    let item = inventory[i];
+    let y = invY + 20 + i * 50;
+
+    // === Info button (works in all modes) ===
+    if (item.info && mx > invX + 182 && mx < invX + 198 &&
+      my > y + 2 && my < y + 18) {
+      showDropdown = true;
+      dropdownItem = item;
+      dropdownX = mx + 10;
+      dropdownY = my + 10;
+      return true; // handled
+    }
+
+    // === Dragging (only in "place" mode) ===
+    if (mode === "place" &&
+      mx > invX + 10 && mx < invX + 210 &&
+      my > y && my < y + 35) {
+      draggedItem = item;
+      return true; // handled
+    }
+  }
+  return false; // nothing matched
 }
 
 function drawStats() {
@@ -475,39 +626,79 @@ function styleButton(btn) {
   btn.style("border-radius", "8px");
   btn.style("font-family", "Orbitron");
   btn.style("cursor", "pointer");
-  btn.style("width", "200px"); 
+  btn.style("width", "200px");
 }
 
 // === Mouse input ===
 function mousePressed() {
+
+  if (handleInventoryClick(mouseX, mouseY)) return;
+
+  // Check if clicking on dropdown close button
+  if (showDropdown && dropdownItem) {
+    let dropW = 280;
+    let finalX = min(dropdownX, width - dropW - 10);
+    let finalY = min(dropdownY, height - 200 - 10);
+
+    if (mouseX > finalX + dropW - 30 && mouseX < finalX + dropW - 10 &&
+      mouseY > finalY + 5 && mouseY < finalY + 25) {
+      showDropdown = false;
+      dropdownItem = null;
+      return;
+    }
+
+    // Click outside dropdown to close
+    if (mouseX < finalX || mouseX > finalX + dropW ||
+      mouseY < finalY || mouseY > finalY + 200) {
+      showDropdown = false;
+      dropdownItem = null;
+    }
+    return;
+  }
+
   if (mode === "room") {
-    let c = floor((mouseX - (width/2 - (gridSize*cellSize)/2)) / cellSize);
-    let r = floor((mouseY - (height/2 - (gridSize*cellSize)/2)) / cellSize);
+    let c = floor((mouseX - (width / 2 - (gridSize * cellSize) / 2)) / cellSize);
+    let r = floor((mouseY - (height / 2 - (gridSize * cellSize) / 2)) / cellSize);
     if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) {
       let idx = roomTiles.findIndex(t => t.r === r && t.c === c);
       if (idx >= 0) roomTiles.splice(idx, 1);
       else roomTiles.push({ r, c });
     }
-  } 
+  }
   else if (mode === "place") {
     let invX = width - 250;
-    let invY = 350;
+    let invY = 150;
+
+    // Check for info button clicks
     for (let i = 0; i < inventory.length; i++) {
+      let item = inventory[i];
       let y = invY + 20 + i * 50;
+
+      // Check info button (only for items with info)
+      if (item.info && mouseX > invX + 182 && mouseX < invX + 198 &&
+        mouseY > y + 2 && mouseY < y + 18) {
+        showDropdown = true;
+        dropdownItem = item;
+        dropdownX = mouseX + 10;
+        dropdownY = mouseY + 10;
+        return;
+      }
+
+      // Check inventory item for dragging
       if (mouseX > invX + 10 && mouseX < invX + 210 && mouseY > y && mouseY < y + 35) {
-        draggedItem = inventory[i];
+        draggedItem = item;
         return;
       }
     }
 
     for (let obj of objects) {
       if (mouseX > obj.x - 45 && mouseX < obj.x + 45 &&
-          mouseY > obj.y - 20 && mouseY < obj.y + 25) {
+        mouseY > obj.y - 20 && mouseY < obj.y + 25) {
         draggingObject = obj;
         return;
       }
     }
-  } 
+  }
   else if (mode === "final") {
     for (let room of rooms) {
       let c = getRoomCenter(room.tiles).add(room.offsetX, room.offsetY);
