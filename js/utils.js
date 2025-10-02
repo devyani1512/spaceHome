@@ -1,7 +1,7 @@
 import { cellSize } from "./state.js";
 
 export function getRoomPoints(tiles) {
-  let points = tiles.map(t => createVector(t.c * cellSize + cellSize/2, t.r * cellSize + cellSize/2));
+  let points = tiles.map(t => createVector(t.c * cellSize + cellSize / 2, t.r * cellSize + cellSize / 2));
   if (points.length > 2) {
     let center = createVector(0, 0);
     for (let p of points) center.add(p);
@@ -13,7 +13,7 @@ export function getRoomPoints(tiles) {
 
 export function getRoomCenter(tiles) {
   let points = getRoomPoints(tiles);
-  let center = createVector(0,0);
+  let center = createVector(0, 0);
   for (let p of points) center.add(p);
   center.div(points.length || 1);
   return center;
