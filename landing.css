@@ -1,0 +1,185 @@
+@font-face {
+    font-family: 'Orbitron';
+    src: url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: -1;
+}
+
+.star-field {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Base style for all star layers */
+.stars, .stars2, .stars3 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: fly-in-stars linear infinite;
+    opacity: 0;
+}
+
+/* Layer 1: Small stars, fastest speed, subtle glow */
+.stars {
+    box-shadow:
+        400px 300px 1px 1px rgba(173, 216, 230, 0.7), -500px 800px 1px 1px rgba(173, 216, 230, 0.7),
+        250px -900px 1px 1px rgba(173, 216, 230, 0.7), -800px -600px 1px 1px rgba(173, 216, 230, 0.7),
+        700px 100px 1px 1px rgba(173, 216, 230, 0.7), -300px 250px 1px 1px rgba(173, 216, 230, 0.7),
+        -950px 450px 1px 1px rgba(173, 216, 230, 0.7), 1500px 1800px 1px 1px rgba(173, 216, 230, 0.7),
+        1100px -1500px 1px 1px rgba(173, 216, 230, 0.7), -1800px 1200px 1px 1px rgba(173, 216, 230, 0.7),
+        100px 500px 1px 1px rgba(173, 216, 230, 0.7), -200px 800px 1px 1px rgba(173, 216, 230, 0.7),
+        300px 100px 1px 1px rgba(173, 216, 230, 0.7), 400px -600px 1px 1px rgba(173, 216, 230, 0.7),
+        -500px 200px 1px 1px rgba(173, 216, 230, 0.7), 600px -900px 1px 1px rgba(173, 216, 230, 0.7),
+        700px 400px 1px 1px rgba(173, 216, 230, 0.7), -800px -100px 1px 1px rgba(173, 216, 230, 0.7),
+        850px 350px 1px 1px rgba(173, 216, 230, 0.7), -700px 200px 1px 1px rgba(173, 216, 230, 0.7),
+        400px -1100px 1px 1px rgba(173, 216, 230, 0.7), -1000px 1200px 1px 1px rgba(173, 216, 230, 0.7),
+        250px 150px 1px 1px rgba(173, 216, 230, 0.7), -600px -750px 1px 1px rgba(173, 216, 230, 0.7),
+        150px -450px 1px 1px rgba(173, 216, 230, 0.7), 800px 1200px 1px 1px rgba(173, 216, 230, 0.7),
+        -1500px -100px 1px 1px rgba(173, 216, 230, 0.7), -900px 1600px 1px 1px rgba(173, 216, 230, 0.7),
+        200px -100px 1px 1px rgba(173, 216, 230, 0.7), -150px 550px 1px 1px rgba(173, 216, 230, 0.7),
+        -800px 800px 1px 1px rgba(173, 216, 230, 0.7), 1300px -1200px 1px 1px rgba(173, 216, 230, 0.7),
+        900px -300px 1px 1px rgba(173, 216, 230, 0.7), -450px 1050px 1px 1px rgba(173, 216, 230, 0.7),
+        1600px -200px 1px 1px rgba(173, 216, 230, 0.7), -2000px 150px 1px 1px rgba(173, 216, 230, 0.7),
+        -100px -50px 1px 1px rgba(173, 216, 230, 0.7), 750px 600px 1px 1px rgba(173, 216, 230, 0.7),
+        -1300px 1100px 1px 1px rgba(173, 216, 230, 0.7), 1900px -800px 1px 1px rgba(173, 216, 230, 0.7),
+        50px 50px 1px 1px rgba(173, 216, 230, 0.7), -50px -50px 1px 1px rgba(173, 216, 230, 0.7),
+        1400px 900px 1px 1px rgba(173, 216, 230, 0.7), -1400px 900px 1px 1px rgba(173, 216, 230, 0.7),
+        2000px 200px 1px 1px rgba(173, 216, 230, 0.7), -2000px -200px 1px 1px rgba(173, 216, 230, 0.7),
+        500px 1000px 1px 1px rgba(173, 216, 230, 0.7), -500px -1000px 1px 1px rgba(173, 216, 230, 0.7),
+        1200px -100px 1px 1px rgba(173, 216, 230, 0.7), -1200px 100px 1px 1px rgba(173, 216, 230, 0.7);
+    animation-duration: 30s;
+}
+
+/* Layer 2: Medium stars, medium speed, slightly stronger glow */
+.stars2 {
+    box-shadow:
+        1200px 1500px 2px 2px rgba(135, 206, 250, 0.8), -1800px -200px 2px 2px rgba(135, 206, 250, 0.8),
+        2500px 900px 2px 2px rgba(135, 206, 250, 0.8), -1000px -500px 2px 2px rgba(135, 206, 250, 0.8),
+        -2000px -800px 2px 2px rgba(135, 206, 250, 0.8), 300px -1000px 2px 2px rgba(135, 206, 250, 0.8),
+        -1200px -1500px 2px 2px rgba(135, 206, 250, 0.8), 800px -1200px 2px 2px rgba(135, 206, 250, 0.8),
+        1500px -1800px 2px 2px rgba(135, 206, 250, 0.8), -1500px 1800px 2px 2px rgba(135, 206, 250, 0.8),
+        2000px 2000px 2px 2px rgba(135, 206, 250, 0.8), 1800px 1600px 2px 2px rgba(135, 206, 250, 0.8),
+        -1400px -100px 2px 2px rgba(135, 206, 250, 0.8), 2200px -1200px 2px 2px rgba(135, 206, 250, 0.8),
+        -800px 1800px 2px 2px rgba(135, 206, 250, 0.8), 1000px 1000px 2px 2px rgba(135, 206, 250, 0.8),
+        -1000px -1000px 2px 2px rgba(135, 206, 250, 0.8), 500px 1500px 2px 2px rgba(135, 206, 250, 0.8),
+        -1500px 500px 2px 2px rgba(135, 206, 250, 0.8), 1800px -800px 2px 2px rgba(135, 206, 250, 0.8),
+        -200px 2200px 2px 2px rgba(135, 206, 250, 0.8), -1800px -1200px 2px 2px rgba(135, 206, 250, 0.8),
+        1000px 100px 2px 2px rgba(135, 206, 250, 0.8), -1000px 100px 2px 2px rgba(135, 206, 250, 0.8),
+        -1500px 1500px 2px 2px rgba(135, 206, 250, 0.8), 1500px -1500px 2px 2px rgba(135, 206, 250, 0.8),
+        2500px 1800px 2px 2px rgba(135, 206, 250, 0.8), -2500px 1800px 2px 2px rgba(135, 206, 250, 0.8),
+        200px -200px 2px 2px rgba(135, 206, 250, 0.8), -200px 200px 2px 2px rgba(135, 206, 250, 0.8),
+        1000px -100px 2px 2px rgba(135, 206, 250, 0.8), -1000px -100px 2px 2px rgba(135, 206, 250, 0.8),
+        500px 500px 2px 2px rgba(135, 206, 250, 0.8), -500px -500px 2px 2px rgba(135, 206, 250, 0.8),
+        1800px 1200px 2px 2px rgba(135, 206, 250, 0.8), -1800px 1200px 2px 2px rgba(135, 206, 250, 0.8),
+        2000px -1500px 2px 2px rgba(135, 206, 250, 0.8), -2000px 1500px 2px 2px rgba(135, 206, 250, 0.8);
+    animation-duration: 50s;
+}
+
+/* Layer 3: Large stars, slowest speed, strong glow */
+.stars3 {
+    box-shadow:
+        -1000px 500px 3px 3px rgba(0, 191, 255, 0.9), -2000px -800px 3px 3px rgba(0, 191, 255, 0.9),
+        300px -1000px 3px 3px rgba(0, 191, 255, 0.9), -1200px -1500px 3px 3px rgba(0, 191, 255, 0.9),
+        -1800px 200px 3px 3px rgba(0, 191, 255, 0.9), 2500px 900px 3px 3px rgba(0, 191, 255, 0.9),
+        -1000px -500px 3px 3px rgba(0, 191, 255, 0.9), 2000px 800px 3px 3px rgba(0, 191, 255, 0.9),
+        300px -1000px 3px 3px rgba(0, 191, 255, 0.9), -1600px 1300px 3px 3px rgba(0, 191, 255, 0.9),
+        2300px -1500px 3px 3px rgba(0, 191, 255, 0.9), 500px 500px 3px 3px rgba(0, 191, 255, 0.9),
+        -500px -500px 3px 3px rgba(0, 191, 255, 0.9), 1200px 800px 3px 3px rgba(0, 191, 255, 0.9),
+        -1200px 800px 3px 3px rgba(0, 191, 255, 0.9), 900px -1800px 3px 3px rgba(0, 191, 255, 0.9),
+        -900px -1800px 3px 3px rgba(0, 191, 255, 0.9), 1000px 2000px 3px 3px rgba(0, 191, 255, 0.9),
+        1500px 2500px 3px 3px rgba(0, 191, 255, 0.9), -2500px -1500px 3px 3px rgba(0, 191, 255, 0.9),
+        800px 1800px 3px 3px rgba(0, 191, 255, 0.9), -800px 1800px 3px 3px rgba(0, 191, 255, 0.9),
+        2200px 100px 3px 3px rgba(0, 191, 255, 0.9), -2200px 100px 3px 3px rgba(0, 191, 255, 0.9),
+        400px -400px 3px 3px rgba(0, 191, 255, 0.9), -400px 400px 3px 3px rgba(0, 191, 255, 0.9),
+        1000px -200px 3px 3px rgba(0, 191, 255, 0.9), -1000px 200px 3px 3px rgba(0, 191, 255, 0.9),
+        1500px 1500px 3px 3px rgba(0, 191, 255, 0.9), -1500px -1500px 3px 3px rgba(0, 191, 255, 0.9),
+        2000px 500px 3px 3px rgba(0, 191, 255, 0.9), -2000px -500px 3px 3px rgba(0, 191, 255, 0.9);
+    animation-duration: 80s;
+}
+
+@keyframes fly-in-stars {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.title {
+    font-size: 4em;
+    margin-bottom: 0.2em;
+}
+
+.subtitle {
+    font-size: 1.5em;
+    margin-top: 0;
+}
+
+.btn {
+    text-decoration: none;
+    background: linear-gradient(90deg, #0040ff, #00d4ff);
+    color: #fff;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* CSS to fix text fluctuation issue */
+.container-hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 1s, visibility 0s 1s;
+}
+
+.container-visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 1s;
+}

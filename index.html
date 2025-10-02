@@ -1,45 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>2D Room Builder</title>
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      font-family: Arial, sans-serif;
-      margin-top: 20px;
-    }
-    #inventory, #stats {
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 150px;
-      height: 400px;
-    }
-    #inventory .item {
-      border: 1px solid #000;
-      padding: 5px;
-      margin: 5px 0;
-      cursor: grab;
-      text-align: center;
-      background: #f0f0f0;
-    }
-    #grid-container {
-      position: relative;
-    }
-    canvas {
-      border: 1px solid black;
-    }
-    button {
-      margin-top: 10px;
-      width: 100%;
-    }
-  </style>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-  <script src="sketch.js"></script>
+    <meta charset="UTF-8">
+    <title>SPACE HOUSE BUILDER</title>
+    <link rel="stylesheet" href="landing.css">
 </head>
 <body>
-    
-  <!-- Inventory -->
-  
+
+<div class="background">
+    <div class="star-field">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+</div>
+
+<div class="container container-hidden">
+    <h1 class="title">SPACE HOUSE BUILDER</h1>
+    <p class="subtitle">Build Your Own Interstellar Habitat</p>
+    <a href="game.html" class="btn">Start Game</a>
+</div>
+
+<script>
+    setTimeout(() => {
+        const container = document.querySelector('.container');
+        container.classList.remove('container-hidden');
+        container.classList.add('container-visible');
+    }, 500); 
+</script>
+
+</body>
+</html>

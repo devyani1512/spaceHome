@@ -1,14 +1,14 @@
 let gridSize = 8;
-let cellSize = 80;
+let cellSize = 60;
 
-let rooms = []; 
-let roomTypes = ["Control Room", "Kitchen", "Rejuvenation", "Last Room"];
-let currentRoomIndex = 0;          // finalized rooms
-let roomTiles = [];       // current room floor tiles
+let rooms = [];
+let roomTypes = ["Control Room", "Crew Chambers", "Medbay", "Mess Module", "Waste Management", "Stowage"];
+let currentRoomIndex = 0;         
+let roomTiles = [];       
 let objects = [];
 let decorations = [];
 
-let mode = "room";        // room | place | final
+let mode = "room";        
 let selectedRoom = null;  // for reform
 let reformingRoom = null;
 
@@ -23,29 +23,42 @@ let dropdownItem = null;
 let dropdownX = 0;
 let dropdownY = 0;
 let totalEnergy = 100; // Initialize total energy
-let totalCost = 0; // Initialize total cost
-let totalPower = 0; // Initialize total power
-let totalUsed = 0; 
+let totalCost = 0; 
+let totalPower = 0; 
+let totalUsed = 0;
 const inventories = {
   "Control Room": [
     { name: "Life Support", energy: 30, power: 10, cost: 50, info: { description: "Regulates air, water, and waste. Essential for crew survival.", specs: ["Oxygen Recycler", "Water Filtration", "Waste Management"], benefits: ["Sustainable habitat", "Reduces resupply needs"] } },
-    { name: "Thermal Control", energy: 15, power: 5, cost: 25, info: { description: "Maintains optimal temperature. Protects crew and electronics from extreme heat.", specs: ["Active Cooling Systems", "Passive Heat Radiators"], benefits: ["Protects electronics", "Ensures crew comfort"] } },
-    { name: "Power System", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and equipment"] } }
+    { name: "Thermal Support", energy: 15, power: 5, cost: 25, info: { description: "Maintains optimal temperature. Protects crew and electronics from extreme heat.", specs: ["Active Cooling Systems", "Passive Heat Radiators"], benefits: ["Protects electronics", "Ensures crew comfort"] } },
+    { name: "Power Sources", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and equipment"] } },
+    { name: "Power Storage", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and equipment"] } },
+    { name: "Comm System", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and equipment"] } }
   ],
-  "Kitchen": [
-    { name: "Astro Yeast Cultivator", energy: 5, power: 3, cost: 10, info: { description: "Grows nutrient-rich yeast culture for protein.", specs: ["Automated Dispenser", "Nutrient Feeder"], benefits: ["High protein source", "Self-sustaining food supply"] } },
-    { name: "CanGrow Hydroponics", energy: 10, power: 8, cost: 15, info: { description: "A compact plant growth chamber for fresh produce.", specs: ["LED Grow Lights", "Hydroponic System"], benefits: ["Fresh produce", "Psychological well-being"] } },
-    { name: "Solein Food Reactor", energy: 20, power: 15, cost: 40, info: { description: "Converts carbon dioxide and water into edible protein.", specs: ["Atmospheric Conversion", "Protein Synthesizer"], benefits: ["Reduces need for food resupply", "Efficient resource use"] } }
+  "Crew Chambers": [
+    { name: "Eclipse private berths", energy: 2, power: 1, cost: 5, info: { description: "Compact sleeping quarters for two crew members.", specs: ["Integrated lighting", "Personal storage lockers"], benefits: ["Space-saving design", "Rest and privacy"] } },
+    { name: "ISS crew chambers", energy: 5, power: 3, cost: 10, info: { description: "A workstation for personal tasks and communication.", specs: ["High-speed data link", "Holoscreen display"], benefits: ["Crew connectivity", "Entertainment and work"] } },
+    { name: "Small crew chambers", energy: 8, power: 5, cost: 15, info: { description: "An area with games and media for crew morale.", specs: ["Virtual reality console", "Audio system"], benefits: ["Boosts morale", "Reduces stress"] } }
   ],
-  "Rejuvenation": [
-    { name: "Treadmill", energy: 10, power: 5, cost: 20, info: { description: "Advanced zero-gravity treadmill for cardiovascular fitness.", specs: ["Speed: 0-20 km/h", "Weight capacity: 150kg"], benefits: ["Maintains bone density", "Cardiovascular health"] } },
-    { name: "Exercise Bike", energy: 15, power: 7, cost: 25, info: { description: "Stationary bike designed for space station use.", specs: ["Resistance levels: 20", "Digital display"], benefits: ["Lower body strength", "Endurance training"] } },
-    { name: "Zen Garden", energy: 5, power: 2, cost: 10, info: { description: "A small, low-maintenance garden for relaxation.", specs: ["Automated Watering", "Moss & Rock elements"], benefits: ["Stress reduction", "Therapeutic environment"] } }
+  "Medbay": [
+    { name: "ARED", energy: 20, power: 10, cost: 30, info: { description: "Advanced full-body diagnostic scanner for crew health monitoring.", specs: ["3D imaging capability", "Real-time vital signs"], benefits: ["Early disease detection", "Non-invasive scanning"] } },
+    { name: "CAGE", energy: 5, power: 2, cost: 15, info: { description: "Portable automated external defibrillator for cardiac emergencies.", specs: ["Voice-guided operation", "Biphasic waveform"], benefits: ["Life-saving intervention", "Easy to operate"] } },
+    { name: "Crew chambers", energy: 25, power: 15, cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } },
+    { name: "Common Habitat MCF", energy: 25, power: 15, cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } }
+
   ],
-  "Medbay": [ // This would be your "Last Room"
-    { name: "Medical Scanner", energy: 20, power: 10, cost: 30, info: { description: "Advanced full-body diagnostic scanner for crew health monitoring.", specs: ["3D imaging capability", "Real-time vital signs"], benefits: ["Early disease detection", "Non-invasive scanning"] } },
-    { name: "Defibrillator", energy: 5, power: 2, cost: 15, info: { description: "Portable automated external defibrillator for cardiac emergencies.", specs: ["Voice-guided operation", "Biphasic waveform"], benefits: ["Life-saving intervention", "Easy to operate"] } },
-    { name: "Bio-Regenerator", energy: 25, power: 15, cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } }
+  "Mess Module": [
+    { name: "Food Stowage", energy: 15, power: 10, cost: 30, info: { description: "Creates pre-packaged meals from nutrient paste.", specs: ["Automated dispenser", "Recipe database"], benefits: ["Efficient food preparation", "Wide variety of meals"] } },
+    { name: "Food prep", energy: 5, power: 2, cost: 10, info: { description: "Provides hot and cold potable water.", specs: ["Integrated filtration", "Temperature control"], benefits: ["Hydration for crew", "Reduces waste"] } }
+  ],
+  "Waste Management": [
+    { name: "AstroYeast", energy: 10, power: 5, cost: 20, info: { description: "Crushes and recycles solid waste into compact bricks.", specs: ["Hydraulic press", "Recycling processor"], benefits: ["Reduces volume of waste", "Recycles materials"] } },
+    { name: "Solein Food reactor", energy: 15, power: 8, cost: 30, info: { description: "Purifies greywater and converts it to potable water.", specs: ["Multi-stage filtration", "UV sterilization"], benefits: ["Conserves water", "Closed-loop system"] } },
+    { name: "CANgrow", energy: 20, power: 10, cost: 40, info: { description: "Filters and re-oxygenates air within the station.", specs: ["CO2 scrubbers", "Particulate filters"], benefits: ["Maintains air quality", "Essential for life support"] } }
+  ],
+  "Stowage": [
+    { name: "Eclipse EVA SYS", energy: 0, power: 0, cost: 10, info: { description: "Standardized lockers for storing equipment and supplies.", specs: ["Numbered slots", "Durable composites"], benefits: ["Organized storage", "Easy access to supplies"] } },
+    { name: "Lunar Vehicles", energy: 0, power: 0, cost: 5, info: { description: "A wall-mounted rack for organizing tools.", specs: ["Magnetic clamps", "Labeling system"], benefits: ["Keeps tools secure", "Prevents floating hazards"] } },
+    { name: "TRI-ATHLETE", energy: 5, power: 3, cost: 15, info: { description: "A secure storage unit for critical spare parts.", specs: ["Climate controlled", "Inventory management system"], benefits: ["Ensures quick repairs", "Reduces mission risk"] } }
   ]
 };
 
@@ -59,15 +72,15 @@ let miniMapX, miniMapY, miniMapW = 250, miniMapH = 250;
 let miniScale = 0.2;
 
 function preload() {
-  bgImg = loadImage("nebula.png");
-  paintingImg = loadImage("nebula.png");
+  bgImg = loadImage("someone.png");
+  paintingImg = loadImage("someone.png");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textAlign(CENTER, CENTER);
 
-  // UI reserved space = bottom 80px
+ 
   let uiY = height - 70;
 
   confirmBtn = createButton("Confirm Layout → Place Objects");
@@ -95,11 +108,17 @@ function setup() {
 }
 
 
+// Add this function to your code
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+
+
 function draw() {
   background(0);
-  image(bgImg, 0, 0, width, height);
+  image(bgImg, 0, 0, windowWidth, windowHeight);
   fill(0, 150);
-  rect(0, 0, width, height);
+  rect(0, 0, windowWidth, windowHeight);
 
   drawTitle();
 
@@ -113,7 +132,7 @@ function draw() {
     if (reformingRoom) {
       roomName = reformingRoom.name; 
     } else {
-      roomName = roomTypes[currentRoomIndex] || "Last Room";
+      roomName = roomTypes[currentRoomIndex] || "Stowage";
     }
 
     text(`Constructing: ${roomName}`, width / 2, 70);
@@ -211,7 +230,7 @@ function finalizeRoom() {
   }
 
   if (reformingRoom) {
-    // Deduct old room's stats from global totals before updating
+    
     totalEnergy += reformingRoom.energy;
     totalCost -= reformingRoom.cost;
     totalPower -= reformingRoom.power;
@@ -238,7 +257,7 @@ function finalizeRoom() {
       return;
     }
 
-    let roomName = roomTypes[currentRoomIndex] || "Medbay";
+    let roomName = roomTypes[currentRoomIndex] || "Stowage";
     let newRoom = {
       name: roomName,
       tiles: [...roomTiles],
@@ -266,7 +285,11 @@ function finalizeRoom() {
     }
     currentRoomIndex++;
   }
-  
+  if (currentRoomIndex >= roomTypes.length) {
+    // Redirect the player to the endgame page.
+    window.location.href = 'endgame.html';
+    return; // Stop the function from executing further.
+}
   mode = "final";
   roomTiles = [];
   objects = [];
@@ -315,7 +338,7 @@ function reformRoom() {
   }
 }
 
-// === Draw multiple rooms ===
+
 function drawAllRooms() {
   for (let room of rooms) {
     push();
@@ -326,7 +349,7 @@ function drawAllRooms() {
   }
 }
 
-// === Corridors (lines between room centers) ===
+
 function drawCorridors() {
   if (!controlRoom) return;
 
@@ -336,7 +359,7 @@ function drawCorridors() {
 
   stroke(200);
   strokeWeight(2);
-  drawingContext.setLineDash([5, 5]); // dotted line
+  drawingContext.setLineDash([5, 5]); 
 
   for (let room of rooms) {
     if (room === controlRoom) continue; // skip control room itself
@@ -371,8 +394,12 @@ function drawLifeSupport() {
 }
 
 
-// === MiniMap ===
+//  MiniMap 
 function drawMiniMap() {
+ 
+  miniMapX = windowWidth - miniMapW - 20;
+  miniMapY = 20;
+  
   fill(20, 180);
   stroke(200);
   rect(miniMapX, miniMapY, miniMapW, miniMapH);
@@ -394,7 +421,7 @@ function drawMiniMap() {
     drawRoomWithWalls(room.tiles, room.floorColor, room.wallColor);
 
     if (points.length > 2) {
-      // === side lengths in grid blocks ===
+     
       for (let i = 0; i < points.length; i++) {
         let p1 = points[i];
         let p2 = points[(i + 1) % points.length];
@@ -414,7 +441,7 @@ function drawMiniMap() {
         text(length, mx, my);
       }
 
-      // === corner angles ===
+      
       for (let i = 0; i < points.length; i++) {
         let prev = points[(i - 1 + points.length) % points.length];
         let curr = points[i];
@@ -439,7 +466,7 @@ function drawMiniMap() {
 }
 
 
-// === Room geometry helpers ===
+
 function getRoomPoints(tiles) {
   let points = tiles.map(t => createVector(t.c * cellSize + cellSize / 2, t.r * cellSize + cellSize / 2));
   if (points.length > 2) {
@@ -503,7 +530,7 @@ function drawGrid() {
   let gridW = gridSize * cellSize;
   let gridH = gridSize * cellSize;
 
-  // Reserve top (title) and bottom (buttons) areas
+  
   let topMargin = 100;
   let bottomMargin = 100;
 
@@ -548,8 +575,8 @@ function drawDropdown() {
   let dropH = 200;
 
   // Adjust position to stay on screen
-  let finalX = min(dropdownX, width - dropW - 10);
-  let finalY = min(dropdownY, height - dropH - 10);
+  let finalX = min(dropdownX, windowWidth - dropW - 10);
+  let finalY = min(dropdownY, windowHeight - dropH - 10);
 
   // Background
   fill(20, 20, 40, 240);
@@ -606,7 +633,7 @@ function drawDropdown() {
 }
 
 function drawInventory() {
-  let invX = width - 250;
+  let invX = windowWidth - 250;
   let invY = 150;
 
   fill(0, 180);
@@ -646,7 +673,7 @@ text(`${item.name} (E:${item.energy} P:${item.power} C:${item.cost})`, invX + 20
 }
 
 function handleInventoryClick(mx, my) {
-  let invX = width - 250;
+  let invX = windowWidth - 250;
   let invY = 150;
 
   let currentRoomName = reformingRoom ? reformingRoom.name : roomTypes[currentRoomIndex];
@@ -656,7 +683,7 @@ function handleInventoryClick(mx, my) {
     let item = currentInventory[i];
     let y = invY + 20 + i * 50;
 
-    // ... (rest of the logic for info button and dragging)
+   
 
     if (item.info && mx > invX + 182 && mx < invX + 198 && my > y + 2 && my < y + 18) {
       showDropdown = true;
@@ -675,7 +702,7 @@ function handleInventoryClick(mx, my) {
 }
 
 function drawStats() {
-  let statsX = width - 250;
+  let statsX = windowWidth - 250;
   let statsY = 20;
   let barWidth = 200;
   let barHeight = 15;
@@ -710,7 +737,7 @@ function drawStats() {
   
   // Total Power Bar
   let powerBarY = statsY + 70;
-  let maxPower = 50; // You can set a max power limit
+  let maxPower = 50; 
   let powerPercent = map(totalPower, 0, maxPower, 0, barWidth);
   
   fill(50, 50, 50, 200);
@@ -758,8 +785,8 @@ function mousePressed() {
 
   if (showDropdown) {
     let dropW = 280;
-    let finalX = min(dropdownX, width - dropW - 10);
-    let finalY = min(dropdownY, height - 200 - 10);
+    let finalX = min(dropdownX, windowWidth - dropW - 10);
+    let finalY = min(dropdownY, windowHeight - 200 - 10);
 
     if (mouseX > finalX + dropW - 30 && mouseX < finalX + dropW - 10 &&
         mouseY > finalY + 5 && mouseY < finalY + 25) {
@@ -785,22 +812,22 @@ function mousePressed() {
     }
   }
   else if (mode === "place") {
-    let invX = width - 250;
+    let invX = windowWidth - 250;
     let invY = 150;
 
-    // Check for info button clicks and dragging from inventory
+   
     if (handleInventoryClick(mouseX, mouseY)) {
       return;
     }
 
-    // Check if an existing object is being clicked for removal or dragging
+   
     for (let i = objects.length - 1; i >= 0; i--) {
       let obj = objects[i];
       // Check if mouse is over the object
       if (mouseX > obj.x - 45 && mouseX < obj.x + 45 &&
           mouseY > obj.y - 20 && mouseY < obj.y + 25) {
         
-        // Find the item details from the inventory to get its stats
+       
         let item = null;
         const currentRoomName = reformingRoom ? reformingRoom.name : roomTypes[currentRoomIndex];
         const currentInventory = inventories[currentRoomName] || [];
@@ -812,21 +839,21 @@ function mousePressed() {
         }
 
         if (item) {
-          // Deduct the stats from the temporary variables
+          
           energy += item.energy;
           cost -= item.cost;
           used--;
 
-          // Deduct from the global variables as well
+          
           totalEnergy += item.energy;
           totalCost -= item.cost;
           totalPower -= item.power;
           totalUsed--;
         }
 
-        // Remove the object from the array
+        
         objects.splice(i, 1);
-        return; // Exit after removing one object
+        return; 
       }
     }
   }
@@ -844,12 +871,44 @@ function mousePressed() {
 
 function mouseDragged() {
   if (draggingRoom) {
-    draggingRoom.offsetX = mouseX;
-    draggingRoom.offsetY = mouseY;
+    let newX = mouseX;
+    let newY = mouseY;
+
+    // Get the room's bounds
+    let roomBounds = getRoomBounds(draggingRoom.tiles);
+    let minX = roomBounds.minX + newX;
+    let maxX = roomBounds.maxX + newX;
+    let minY = roomBounds.minY + newY;
+    let maxY = roomBounds.maxY + newY;
+
+    // Constrain the room's position to the canvas
+    newX = constrain(newX, -roomBounds.minX, windowWidth - roomBounds.maxX);
+    newY = constrain(newY, -roomBounds.minY, windowHeight - roomBounds.maxY);
+
+    draggingRoom.offsetX = newX;
+    draggingRoom.offsetY = newY;
+
   } else if (draggingObject) {
     draggingObject.x = mouseX;
     draggingObject.y = mouseY;
   }
+}
+// Helper function to get the bounding box of a room's tiles
+function getRoomBounds(tiles) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+
+  for (let tile of tiles) {
+    let x = tile.c * cellSize;
+    let y = tile.r * cellSize;
+    minX = min(minX, x);
+    maxX = max(maxX, x + cellSize);
+    minY = min(minY, y);
+    maxY = max(maxY, y + cellSize);
+  }
+  return { minX, maxX, minY, maxY };
 }
 
 function pointInRoom(px, py, tiles) {
