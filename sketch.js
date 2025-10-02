@@ -1,60 +1,58 @@
+// --- Global variables remain the same ---
 let gridSize = 8;
 let cellSize = 60;
-
 let rooms = [];
 let roomTypes = ["Control Room", "Crew Chambers", "Medbay", "Mess Module", "Waste Management", "Stowage"];
 let currentRoomIndex = 0;
 let roomTiles = [];
 let objects = [];
 let decorations = [];
-
 let mode = "room";
 let selectedRoom = null;
 let reformingRoom = null;
-
 let energy = 100, cost = 200, used = 0;
 let draggedItem = null;
 let draggingObject = null;
 let draggingRoom = null;
-
-let expandedItem = null; // Tracks the currently open inventory item
-
+let expandedItem = null;
 let totalEnergy = 100;
 let totalCost = 0;
 let totalPower = 0;
 let totalUsed = 0;
+
+// This is your inventory object, now with imgSrc properties
 const inventories = {
   "Control Room": [
-    { name: "Life Support", energy: 30, power: 10, cost: 50, info: { description: "Regulates air, water, and waste. Essential for crew survival.", specs: ["Oxygen Recycler", "Water Filtration", "Waste Management"], benefits: ["Sustainable habitat", "Reduces resupply needs"] } },
-    { name: "Thermal Support", energy: 15, power: 5, cost: 25, info: { description: "Maintains optimal temperature. Protects crew and electronics from extreme heat.", specs: ["Active Cooling Systems", "Passive Heat Radiators"], benefits: ["Protects electronics", "Ensures crew comfort"] } },
-    { name: "Power Sources", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } },
-    { name: "Power Storage", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } },
-    { name: "Comm System", energy: 20, power: 25, cost: 35, info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } }
+    { name: "Life Support", energy: 30, power: 10, cost: 50, imgSrc: 'placeholder1.jpg', info: { description: "Regulates air, water, and waste. Essential for crew survival.", specs: ["Oxygen Recycler", "Water Filtration", "Waste Management"], benefits: ["Sustainable habitat", "Reduces resupply needs"] } },
+    { name: "Thermal Support", energy: 15, power: 5, cost: 25, imgSrc: 'placeholder1.jpg', info: { description: "Maintains optimal temperature. Protects crew and electronics from extreme heat.", specs: ["Active Cooling Systems", "Passive Heat Radiators"], benefits: ["Protects electronics", "Ensures crew comfort"] } },
+    { name: "Power Sources", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder1.jpg', info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } },
+    { name: "Power Storage", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder1.jpg', info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } },
+    { name: "Comm System", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder1.jpg', info: { description: "Provides power for all station systems.", specs: ["Solar Arrays", "Battery Banks", "Fusion Core"], benefits: ["Reliable energy source", "Powers all life support and \nequipment"] } }
   ],
   "Crew Chambers": [
-    { name: "Eclipse private berths", energy: 2, power: 1, cost: 5, info: { description: "Compact sleeping quarters for two crew members.", specs: ["Integrated lighting", "Personal storage lockers"], benefits: ["Space-saving design", "Rest and privacy"] } },
-    { name: "ISS crew chambers", energy: 5, power: 3, cost: 10, info: { description: "A workstation for personal tasks and communication.", specs: ["High-speed data link", "Holoscreen display"], benefits: ["Crew connectivity", "Entertainment and work"] } },
-    { name: "Small crew chambers", energy: 8, power: 5, cost: 15, info: { description: "An area with games and media for crew morale.", specs: ["Virtual reality console", "Audio system"], benefits: ["Boosts morale", "Reduces stress"] } }
+    { name: "Eclipse private berths", energy: 2, power: 1, cost: 5, imgSrc: 'placeholder1.jpg', info: { description: "Compact sleeping quarters for two crew members.", specs: ["Integrated lighting", "Personal storage lockers"], benefits: ["Space-saving design", "Rest and privacy"] } },
+    { name: "ISS crew chambers", energy: 5, power: 3, cost: 10, imgSrc: 'placeholder1.jpg', info: { description: "A workstation for personal tasks and communication.", specs: ["High-speed data link", "Holoscreen display"], benefits: ["Crew connectivity", "Entertainment and work"] } },
+    { name: "Small crew chambers", energy: 8, power: 5, cost: 15, imgSrc: 'placeholder1.jpg', info: { description: "An area with games and media for crew morale.", specs: ["Virtual reality console", "Audio system"], benefits: ["Boosts morale", "Reduces stress"] } }
   ],
   "Medbay": [
-    { name: "ARED", energy: 20, power: 10, cost: 30, info: { description: "Advanced full-body diagnostic scanner for crew health monitoring.", specs: ["3D imaging capability", "Real-time vital signs"], benefits: ["Early disease detection", "Non-invasive scanning"] } },
-    { name: "CAGE", energy: 5, power: 2, cost: 15, info: { description: "Portable automated external defibrillator for cardiac emergencies.", specs: ["Voice-guided operation", "Biphasic waveform"], benefits: ["Life-saving intervention", "Easy to operate"] } },
-    { name: "Crew chambers", energy: 25, power: 15, cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } },
-    { name: "Common Habitat MCF", energy: 25, power: 15, cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } }
+    { name: "ARED", energy: 20, power: 10, cost: 30, imgSrc: 'placeholder1.jpg', info: { description: "Advanced full-body diagnostic scanner for crew health monitoring.", specs: ["3D imaging capability", "Real-time vital signs"], benefits: ["Early disease detection", "Non-invasive scanning"] } },
+    { name: "CAGE", energy: 5, power: 2, cost: 15, imgSrc: 'placeholder1.jpg', info: { description: "Portable automated external defibrillator for cardiac emergencies.", specs: ["Voice-guided operation", "Biphasic waveform"], benefits: ["Life-saving intervention", "Easy to operate"] } },
+    { name: "Crew chambers", energy: 25, power: 15, imgSrc: 'placeholder1.jpg', cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } },
+    { name: "Common Habitat MCF", energy: 25, power: 15, imgSrc: 'placeholder1.jpg', cost: 50, info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } }
   ],
   "Mess Module": [
-    { name: "Food Stowage", energy: 15, power: 10, cost: 30, info: { description: "Creates pre-packaged meals from nutrient paste.", specs: ["Automated dispenser", "Recipe database"], benefits: ["Efficient food preparation", "Wide variety of meals"] } },
-    { name: "Food prep", energy: 5, power: 2, cost: 10, info: { description: "Provides hot and cold potable water.", specs: ["Integrated filtration", "Temperature control"], benefits: ["Hydration for crew", "Reduces waste"] } }
+    { name: "Food Stowage", energy: 15, power: 10, cost: 30, imgSrc: 'placeholder1.jpg', info: { description: "Creates pre-packaged meals from nutrient paste.", specs: ["Automated dispenser", "Recipe database"], benefits: ["Efficient food preparation", "Wide variety of meals"] } },
+    { name: "Food prep", energy: 5, power: 2, cost: 10, imgSrc: 'placeholder1.jpg', info: { description: "Provides hot and cold potable water.", specs: ["Integrated filtration", "Temperature control"], benefits: ["Hydration for crew", "Reduces waste"] } }
   ],
   "Waste Management": [
-    { name: "AstroYeast", energy: 10, power: 5, cost: 20, info: { description: "Crushes and recycles solid waste into compact bricks.", specs: ["Hydraulic press", "Recycling processor"], benefits: ["Reduces volume of waste", "Recycles materials"] } },
-    { name: "Solein Food reactor", energy: 15, power: 8, cost: 30, info: { description: "Purifies greywater and converts it to potable water.", specs: ["Multi-stage filtration", "UV sterilization"], benefits: ["Conserves water", "Closed-loop system"] } },
-    { name: "CANgrow", energy: 20, power: 10, cost: 40, info: { description: "Filters and re-oxygenates air within the station.", specs: ["CO2 scrubbers", "Particulate filters"], benefits: ["Maintains air quality", "Essential for life support"] } }
+    { name: "AstroYeast", energy: 10, power: 5, cost: 20, imgSrc: 'placeholder1.jpg', info: { description: "Crushes and recycles solid waste into compact bricks.", specs: ["Hydraulic press", "Recycling processor"], benefits: ["Reduces volume of waste", "Recycles materials"] } },
+    { name: "Solein Food reactor", energy: 15, power: 8, cost: 30, imgSrc: 'placeholder1.jpg', info: { description: "Purifies greywater and converts it to potable water.", specs: ["Multi-stage filtration", "UV sterilization"], benefits: ["Conserves water", "Closed-loop system"] } },
+    { name: "CANgrow", energy: 20, power: 10, cost: 40, imgSrc: 'placeholder1.jpg', info: { description: "Filters and re-oxygenates air within the station.", specs: ["CO2 scrubbers", "Particulate filters"], benefits: ["Maintains air quality", "Essential for life support"] } }
   ],
   "Stowage": [
-    { name: "Eclipse EVA SYS", energy: 0, power: 0, cost: 10, info: { description: "Standardized lockers for storing equipment and supplies.", specs: ["Numbered slots", "Durable composites"], benefits: ["Organized storage", "Easy access to supplies"] } },
-    { name: "Lunar Vehicles", energy: 0, power: 0, cost: 5, info: { description: "A wall-mounted rack for organizing tools.", specs: ["Magnetic clamps", "Labeling system"], benefits: ["Keeps tools secure", "Prevents floating hazards"] } },
-    { name: "TRI-ATHLETE", energy: 5, power: 3, cost: 15, info: { description: "A secure storage unit for critical spare parts.", specs: ["Climate controlled", "Inventory management system"], benefits: ["Ensures quick repairs", "Reduces mission risk"] } }
+    { name: "Eclipse EVA SYS", energy: 0, power: 0, cost: 10, imgSrc: 'placeholder1.jpg', info: { description: "Standardized lockers for storing equipment and supplies.", specs: ["Numbered slots", "Durable composites"], benefits: ["Organized storage", "Easy access to supplies"] } },
+    { name: "Lunar Vehicles", energy: 0, power: 0, cost: 5, imgSrc: 'placeholder1.jpg', info: { description: "A wall-mounted rack for organizing tools.", specs: ["Magnetic clamps", "Labeling system"], benefits: ["Keeps tools secure", "Prevents floating hazards"] } },
+    { name: "TRI-ATHLETE", energy: 5, power: 3, cost: 15, imgSrc: 'placeholder1.jpg', info: { description: "A secure storage unit for critical spare parts.", specs: ["Climate controlled", "Inventory management system"], benefits: ["Ensures quick repairs", "Reduces mission risk"] } }
   ]
 };
 
@@ -62,12 +60,33 @@ let bgImg;
 let confirmBtn, finalizeBtn, newRoomBtn, reformBtn;
 let floorColor = [120, 200, 255, 180];
 let wallColor = [30, 50, 120, 220];
-
 let miniMapX, miniMapY, miniMapW = 250, miniMapH = 250;
 let miniScale = 0.2;
 
+// **MODIFICATION 1: The preload() function now loads your images**
 function preload() {
   bgImg = loadImage("someone.png");
+
+  // Loop through all inventory items and load their images
+  for (const roomType in inventories) {
+    for (const item of inventories[roomType]) {
+      if (item.imgSrc) {
+        // We load the image and store it in a new 'img' property on the item object
+        item.img = loadImage(item.imgSrc);
+      }
+    }
+  }
+}
+
+// **MODIFICATION 2: A new helper function to find item details**
+function findItemDetails(itemName) {
+  for (const roomType in inventories) {
+    const foundItem = inventories[roomType].find(item => item.name === itemName);
+    if (foundItem) {
+      return foundItem;
+    }
+  }
+  return null; // Return null if no item with that name is found
 }
 
 function setup() {
@@ -153,9 +172,9 @@ function draw() {
     drawStats();
     drawAllRooms();
     drawRoomWithWalls(roomTiles, floorColor, wallColor);
-    drawObjects(objects);
+    drawObjects(objects); // This will now draw sprites
     drawInventory();
-    if (draggedItem) drawDraggedItem(draggedItem);
+    if (draggedItem) drawDraggedItem(draggedItem); // This will now draw sprites
   } else if (mode === "final") {
     confirmBtn.hide();
     finalizeBtn.hide();
@@ -174,29 +193,61 @@ function draw() {
   }
 }
 
-// 1. ADD THIS NEW HELPER FUNCTION TO YOUR CODE
+// **MODIFICATION 3: The drawObjects() function now draws sprites**
+function drawObjects(objs) {
+  for (let obj of objs) {
+    const itemDetails = findItemDetails(obj.name);
+    if (itemDetails && itemDetails.img) {
+      // Draw the image/sprite
+      imageMode(CENTER);
+      image(itemDetails.img, obj.x, obj.y, 60, 60); // You can adjust the size (60, 60) here
+      imageMode(CORNER); // Reset imageMode to avoid affecting other drawing functions
+    } else {
+      // Fallback to drawing a rectangle if no image is found for an item
+      fill(255, 150, 0, 220);
+      stroke(0, 150, 255);
+      rect(obj.x - 40, obj.y - 20, 90, 45, 8);
+      fill(0);
+      noStroke();
+      textSize(12);
+      text(obj.name, obj.x, obj.y);
+    }
+  }
+}
+
+// **MODIFICATION 4: The drawDraggedItem() function now draws sprites**
+function drawDraggedItem(item) {
+  if (item.img) {
+    // Draw the image while dragging
+    imageMode(CENTER);
+    image(item.img, mouseX, mouseY, 60, 60); // Adjust size as needed
+    imageMode(CORNER);
+  } else {
+    // Fallback for items without images, drawing the old rectangle
+    fill(255, 180, 0, 220);
+    stroke(0, 200, 255);
+    rect(mouseX - 45, mouseY - 20, 90, 40, 8);
+    fill(0);
+    noStroke();
+    textSize(12);
+    text(item.name, mouseX, mouseY);
+  }
+}
+
+// --- All other functions from here on remain the same as the last version ---
+
 function calculateDetailHeight(item) {
   if (!item || !item.info) return 0;
-
-  let height = 15; // Top padding
-
-  // Approximate height for the description text block
+  let height = 15;
   height += 40;
-
-  // Height for "Specifications" title and its items
-  height += 20; // Title
-  height += item.info.specs.length * 15; // Each spec line
-
-  // Height for "Benefits" title and its items
-  height += 20; // Title
-  height += item.info.benefits.length * 15; // Each benefit line
-
-  height += 15; // Bottom padding
+  height += 20;
+  height += item.info.specs.length * 15;
+  height += 20;
+  height += item.info.benefits.length * 15;
+  height += 15;
   return height;
 }
 
-
-// 2. REPLACE YOUR OLD drawInventory FUNCTION WITH THIS ONE
 function drawInventory() {
   let invX = windowWidth - 250;
   let invY = 150;
@@ -206,9 +257,25 @@ function drawInventory() {
   let currentRoomName = reformingRoom ? reformingRoom.name : roomTypes[currentRoomIndex];
   const currentInventory = inventories[currentRoomName] || [];
 
-  // --- Pass 1: Calculate layout (positions and heights) ---
+  let totalInventoryHeight = 40;
+  for (const item of currentInventory) {
+    totalInventoryHeight += itemH + 5;
+    if (expandedItem === item) {
+      totalInventoryHeight += calculateDetailHeight(item);
+    }
+  }
+
+  fill(20, 30, 50, 220);
+  noStroke();
+  rect(invX, invY, invW, totalInventoryHeight, 10);
+
+  fill(255);
+  textSize(16);
+  textAlign(LEFT, TOP);
+  text("Inventory", invX + 10, invY + 10);
+
+  let layout = [];
   let yOffset = invY + 40;
-  const layout = [];
   for (const item of currentInventory) {
     let detailH = 0;
     if (expandedItem === item) {
@@ -217,39 +284,21 @@ function drawInventory() {
     layout.push({ item, y: yOffset, detailH });
     yOffset += itemH + 5 + detailH;
   }
-  let totalInventoryHeight = yOffset - invY;
 
-  // --- Pass 2: Draw everything using the calculated layout ---
-
-  // Draw main background
-  fill(20, 30, 50, 220);
-  noStroke();
-  rect(invX, invY, invW, totalInventoryHeight, 10);
-
-  // Draw Title
-  fill(255);
-  textSize(16);
-  textAlign(LEFT, TOP);
-  text("Inventory", invX + 10, invY + 10);
-
-  // Draw items and details
   for (const data of layout) {
     let { item, y, detailH } = data;
     let itemX = invX + 10;
     let itemW = invW - 20;
 
-    // Draw the main item bar
     fill(50, 100, 200, 255);
     rect(itemX, y, itemW, itemH, 6);
 
-    // Draw the item name (with a max width to prevent overlap)
     fill(255);
     textAlign(LEFT, CENTER);
     textSize(12);
     let textMaxWidth = itemW - 45;
     text(`${item.name} (E:${item.energy} P:${item.power} C:${item.cost})`, itemX + 10, y + itemH / 2, textMaxWidth);
 
-    // Draw the 'i' button
     if (item.info) {
       let infoBtnX = itemX + itemW - 18;
       let infoBtnY = y + itemH / 2;
@@ -261,18 +310,14 @@ function drawInventory() {
       text("i", infoBtnX, infoBtnY);
     }
 
-    // Draw expanded details, if any
     if (expandedItem === item) {
       let detailY = y + itemH;
-
-      // Draw details background with the DYNAMIC height
       fill(30, 40, 70, 255);
       stroke(0, 150, 255);
       strokeWeight(1);
       rect(itemX, detailY, itemW, detailH, 6);
       noStroke();
 
-      // Draw the text content
       let textX = itemX + 10;
       let textW = itemW - 20;
       let currentY = detailY + 15;
@@ -307,53 +352,50 @@ function drawInventory() {
     }
   }
 }
-// THIS IS THE CORRECTED MOUSE CLICK HANDLING FUNCTION
+
 function handleInventoryClick(mx, my) {
   let invX = windowWidth - 250;
   let invY = 150;
   let invW = 220;
   let itemH = 35;
-  let yOffset = invY + 40;
 
   let currentRoomName = reformingRoom ? reformingRoom.name : roomTypes[currentRoomIndex];
   const currentInventory = inventories[currentRoomName] || [];
 
-  for (let i = 0; i < currentInventory.length; i++) {
-    let item = currentInventory[i];
-    let y = yOffset;
+  let yOffset = invY + 40;
+  for (const item of currentInventory) {
     let itemX = invX + 10;
     let itemW = invW - 20;
+    let y = yOffset;
 
     let infoBtnX = itemX + itemW - 18;
-    let infoBtnY = y + itemH / 2;
 
     // Check for click on the 'i' button
-    if (item.info && dist(mx, my, infoBtnX, infoBtnY) < 10) {
+    if (item.info && dist(mx, my, infoBtnX, y + itemH / 2) < 10) {
       expandedItem = (expandedItem === item) ? null : item;
-      return true;
+      return true; // Click handled
     }
 
     // Check for click on the main bar for dragging
     if (mode === "place" && mx > itemX && mx < infoBtnX - 15 && my > y && my < y + itemH) {
       draggedItem = item;
-      return true;
+      return true; // Click handled
     }
 
+    // Update yOffset for the next item's position
     yOffset += itemH + 5;
     if (expandedItem === item) {
-      yOffset += 155;
+      yOffset += calculateDetailHeight(item);
     }
   }
   return false;
 }
-
 
 function mousePressed() {
   if (handleInventoryClick(mouseX, mouseY)) {
     return;
   }
 
-  // Clicking anywhere else closes an open dropdown
   if (expandedItem) {
     expandedItem = null;
   }
@@ -410,7 +452,29 @@ function mousePressed() {
   }
 }
 
-// --- ALL OTHER FUNCTIONS REMAIN UNCHANGED FROM HERE ---
+function mouseReleased() {
+  if (draggedItem && (mode === "place" || reformingRoom)) {
+    if (pointInRoom(mouseX, mouseY, roomTiles)) {
+      objects.push({ name: draggedItem.name, x: mouseX, y: mouseY });
+
+      energy -= draggedItem.energy;
+      cost += draggedItem.cost;
+      used++;
+
+      totalEnergy -= draggedItem.energy;
+      totalCost += draggedItem.cost;
+      totalPower += draggedItem.power;
+      totalUsed++;
+
+    } else {
+      console.log("Can't place object outside the room");
+    }
+  }
+
+  draggedItem = null;
+  draggingObject = null;
+  draggingRoom = null;
+}
 
 function isOverlapping(newTiles) {
   for (let room of rooms) {
@@ -753,18 +817,6 @@ function highlightSelectedTiles() {
   }
 }
 
-function drawObjects(objs) {
-  for (let obj of objs) {
-    fill(255, 150, 0, 220);
-    stroke(0, 150, 255);
-    rect(obj.x - 40, obj.y - 20, 90, 45, 8);
-    fill(0);
-    noStroke();
-    textSize(12);
-    text(obj.name, obj.x, obj.y);
-  }
-}
-
 function drawStats() {
   let statsX = windowWidth - 250;
   let statsY = 20;
@@ -817,16 +869,6 @@ function drawTitle() {
   stroke(0);
   strokeWeight(3);
   text("SPACE HOUSE BUILDER", 40, 30);
-}
-
-function drawDraggedItem(item) {
-  fill(255, 180, 0, 220);
-  stroke(0, 200, 255);
-  rect(mouseX - 45, mouseY - 20, 90, 40, 8);
-  fill(0);
-  noStroke();
-  textSize(12);
-  text(item.name, mouseX, mouseY);
 }
 
 function styleButton(btn) {
@@ -888,28 +930,4 @@ function pointInRoom(px, py, tiles) {
     if (intersect) inside = !inside;
   }
   return inside;
-}
-
-function mouseReleased() {
-  if (draggedItem && (mode === "place" || reformingRoom)) {
-    if (pointInRoom(mouseX, mouseY, roomTiles)) {
-      objects.push({ name: draggedItem.name, x: mouseX, y: mouseY });
-
-      energy -= draggedItem.energy;
-      cost += draggedItem.cost;
-      used++;
-
-      totalEnergy -= draggedItem.energy;
-      totalCost += draggedItem.cost;
-      totalPower += draggedItem.power;
-      totalUsed++;
-
-    } else {
-      console.log("Can't place object outside the room");
-    }
-  }
-
-  draggedItem = null;
-  draggingObject = null;
-  draggingRoom = null;
 }
