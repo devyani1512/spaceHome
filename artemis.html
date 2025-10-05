@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Artemis Mission Overview</title>
+  <link href="https://fonts.cdnfonts.com/css/vcr-osd-mono" rel="stylesheet">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #0d1117;
+      font-family: 'VCR OSD Mono', monospace;
       color: white;
-      margin: 0;
-      padding: 0;
-      overflow-x: hidden;
+      text-shadow: 2px 2px 4px black;
+      letter-spacing: 2px;
     }
 
     /* ===== Base Section Style ===== */
@@ -19,7 +18,8 @@
       position: relative;
       margin: 20px auto;
       width: 90%;
-      max-width: 700px;
+      max-width: 1200px;
+      height: 250px;
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -28,18 +28,21 @@
 
     .section img {
       width: 100%;
+      height: 100%;
+      object-fit: cover;  /* Keeps image proportionate while filling the box */
       display: block;
-      transition: all 0.5s ease-in-out;
+      filter: brightness(0.85); /* slightly darkens to make text stand out */
+      transition: filter 0.3s ease;
     }
 
     .section-title {
       position: absolute;
-      bottom: 10px;
-      left: 20px;
-      font-size: 1.2em;
+      bottom: 20px;
+      left: 30px;
+      font-size: 1.5em;
       font-weight: bold;
       background: rgba(0, 0, 0, 0.6);
-      padding: 8px 12px;
+      padding: 10px 16px;
       border-radius: 8px;
     }
 
@@ -67,20 +70,61 @@
     }
 
     .overlay-content {
-      max-width: 800px;
-      text-align: left;
-      background: #161b22;
-      border-radius: 15px;
-      padding: 30px;
-      line-height: 1.6;
-      position: relative;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    }
+  max-width: 800px;
+  max-height: 90vh;   /* prevents overflow */
+  overflow-y: auto;   /* enables vertical scrolling */
+  text-align: left;
+  background: #161b22;
+  border-radius: 15px;
+  padding: 30px;
+  line-height: 1.6;
+  position: relative;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+}
 
     .overlay-content h2 {
       margin-top: 0;
       color: #58a6ff;
     }
+
+    .overlay-content::-webkit-scrollbar {
+  width: 8px;
+}
+.overlay-content::-webkit-scrollbar-track {
+  background: #0d1117;
+  border-radius: 4px;
+}
+.overlay-content::-webkit-scrollbar-thumb {
+  background: #58a6ff;
+  border-radius: 4px;
+}
+.overlay-content::-webkit-scrollbar-thumb:hover {
+  background: #1f6feb;
+}
+.item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.item img {
+  width: 120px;    /* like a large desktop icon */
+  height: auto;    /* keep proportions */
+  margin-right: 20px;
+  border-radius: 8px;
+  flex-shrink: 0;  /* prevents shrinking */
+}
+
+.item-text h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2em;
+  color: #58a6ff;
+}
+
+.item-text p {
+  margin: 0;
+  font-size: 0.95em;
+}
 
     .close-btn {
       position: absolute;
@@ -103,22 +147,41 @@
       from { opacity: 0; }
       to { opacity: 1; }
     }
+
+    /* ===== Starfield Background ===== */
+    canvas#starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* keeps stars behind other content */
+      background: black;
+    }
+
   </style>
 </head>
 <body>
 
   <!-- Artemis Mission Timeline Section -->
   <div class="section">
-    <img src="0a2eb560-ff83-4159-8c37-375f2b278189.png" alt="Artemis Mission Timeline">
+    <img src="Artemis/banner1.png" alt="Artemis Mission Arsenal">
     <div class="section-title">Artemis Mission Timeline</div>
     <div class="arrow" onclick="openOverlay('timeline')">➤</div>
   </div>
 
   <!-- Artemis Mission Projects Section -->
   <div class="section">
-    <img src="0a2eb560-ff83-4159-8c37-375f2b278189.png" alt="Artemis Mission Projects">
+    <img src="Artemis/banner2.png" alt="Artemis Mission Projects">
     <div class="section-title">Artemis Mission Projects</div>
     <div class="arrow" onclick="openOverlay('projects')">➤</div>
+  </div>
+
+  <!-- Artemis Mission Sources Section -->
+  <div class="section">
+    <img src="Artemis/artemis1.jpg" alt="Artemis Mission Sources">
+    <div class="section-title">Artemis Mission Reading Sources</div>
+    <div class="arrow" onclick="openOverlay('sources')">➤</div>
   </div>
 
   <!-- ===== Overlays ===== -->
@@ -127,17 +190,53 @@
   <div class="overlay" id="timeline-overlay">
     <div class="overlay-content">
       <button class="close-btn" onclick="closeOverlay('timeline')">✕</button>
-      <h2>Artemis Mission Timeline</h2>
-      <p>
-        The Artemis Mission Timeline details key milestones from Artemis I through Artemis IV, 
-        outlining NASA’s path to returning humans to the Moon. It includes critical phases such as:
-      </p>
-      <ul>
-        <li><strong>Artemis I:</strong> Uncrewed test flight to lunar orbit (completed successfully)</li>
-        <li><strong>Artemis II:</strong> First crewed mission around the Moon</li>
-        <li><strong>Artemis III:</strong> Lunar landing with the first woman and person of color</li>
-        <li><strong>Artemis IV:</strong> Gateway module assembly for long-term lunar presence</li>
-      </ul>
+      <h2>Artemis Mission Highlights</h2>
+      <p>Explore five key visuals from the Artemis missions, each representing a milestone or technology.</p>
+
+      <!-- Image + Text Block 1 -->
+      <div class="item">
+        <img src="Artemis/sls.png" alt="Artemis I Launch" />
+        <div class="item-text">
+          <h3>Space Launch System Rocket</h3>
+          <p>This massive spacecraft is capable of taking the Orion astronauts and cargo to moon in the same mission. It is still under development and will be the most powerful rocket system once launched.</p>
+        </div>
+      </div>
+
+      <!-- Image + Text Block 2 -->
+      <div class="item">
+        <img src="Artemis/orion.png" alt="Orion Spacecraft Interior" />
+        <div class="item-text">
+          <h3>Orion Spacecraft</h3>
+          <p>This is the NASA spacecraft that will carry the crew from our planet to the Moon.</p>
+        </div>
+      </div>
+
+      <!-- Image + Text Block 3 -->
+      <div class="item">
+        <img src="Artemis/starship.png" alt="Lunar Gateway Concept" />
+        <div class="item-text">
+          <h3>The Human Landing System</h3>
+          <p>Built with the help of Blue Origins and SpaceX, this landing system will be the final mode of transportation to the lunar surface. It is capable of carrying upto 30,000 pounds of cargo. Isn't that alot!</p>
+        </div>
+      </div>
+
+      <!-- Image + Text Block 4 -->
+      <div class="item">
+        <img src="Artemis/Gateway.png" alt="SLS Rocket on Launchpad" />
+        <div class="item-text">
+          <h3>Gateway</h3>
+          <p>This spaceship will be the one waiting in lunar orbit for the first crew to arrive for the lunar mission. It will remain in the orbit for than a decade , acting as space for humans to live and work, supporting long-term science and exploration on Moon.</p>
+        </div>
+      </div>
+
+      <!-- Image + Text Block 5 -->
+      <div class="item">
+        <img src="Artemis/EVA.png" alt="Human Landing System" />
+        <div class="item-text">
+          <h3>Surface Mobility</h3>
+          <p>NASA is in the process of developing new-generation spacesuits. These will help the astronauts move on the lunar surface during EVAs.Explore more about them in the game!</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -147,18 +246,33 @@
       <button class="close-btn" onclick="closeOverlay('projects')">✕</button>
       <h2>Artemis Mission Projects</h2>
       <p>
-        The Artemis program involves multiple international and industrial collaborations that 
-        integrate technologies for sustainable space exploration. Major projects include:
+        These are some of the teams and projects are responsible for the core research going on at NASA about space habitats:
       </p>
       <ul>
-        <li><strong>Orion Spacecraft:</strong> Deep-space crew module for lunar missions.</li>
-        <li><strong>SLS Rocket:</strong> Most powerful rocket built for human spaceflight.</li>
-        <li><strong>Lunar Gateway:</strong> Modular space station orbiting the Moon.</li>
-        <li><strong>Human Landing System:</strong> Designed for safe and reusable Moon landings.</li>
+        <li><strong>NextSTEP:</strong> The NASA Next Space Technologies for Exploration Partnerships (NextSTEP) was released in April 2016, with a focus on developing a habitation capability in cis-lunar space through multiple commercial partnerships</li>
+        <li><strong>NASA Human Research Program (HRP):</strong> NASA’s Human Research Program (HRP) conducts research to understand and reduce the risks to astronaut health and performance during long-duration space missions.</li>
+        <li><strong>Constellation Architecture Team-Lunar Habitat :</strong> The Constellation Architecture Team was a NASA group formed in the mid-2000s to define and integrate the mission architecture, vehicles, and technologies for the Constellation Program (the precursor to Artemis)</li>
       </ul>
     </div>
   </div>
 
+  <!-- Sources Overlay -->
+  <div class="overlay" id="sources-overlay">
+    <div class="overlay-content">
+      <button class="close-btn" onclick="closeOverlay('sources')">✕</button>
+      <h2>Artemis Mission Sources</h2>
+      <p>
+        Learn more from official NASA publications and international partners contributing to the Artemis program.
+      </p>
+      <ul>
+        <li><a href="https://www.nasa.gov/artemisprogram" target="_blank">NASA Artemis Program Overview</a></li>
+        <li><a href="https://www.nasa.gov/specials/artemis/" target="_blank">NASA Artemis Missions Portal</a></li>
+        <li><a href="https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Artemis" target="_blank">ESA Contributions to Artemis</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== JavaScript ===== -->
   <script>
     function openOverlay(type) {
       document.getElementById(`${type}-overlay`).style.display = 'flex';
@@ -169,6 +283,65 @@
       document.getElementById(`${type}-overlay`).style.display = 'none';
       document.body.style.overflow = 'auto';
     }
+  </script>
+
+  <!-- Starfield Canvas -->
+  <canvas id="starfield"></canvas>
+
+  <script>
+    const canvas = document.getElementById("starfield");
+    const ctx = canvas.getContext("2d");
+
+    let stars = [];
+    const numStars = 400;
+    let width, height, centerX, centerY;
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      centerX = width / 2;
+      centerY = height / 2;
+      canvas.width = width;
+      canvas.height = height;
+      createStars();
+    }
+
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: (Math.random() - 0.5) * width,
+          y: (Math.random() - 0.5) * height,
+          z: Math.random() * width,
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, width, height);
+
+      for (let star of stars) {
+        star.z -= 1;
+        if (star.z <= 0) star.z = width;
+
+        const k = 128 / star.z;
+        const x = star.x * k + centerX;
+        const y = star.y * k + centerY;
+
+        if (x < 0 || x >= width || y < 0 || y >= height) continue;
+
+        const brightness = (1 - star.z / width) * 500;
+        ctx.fillStyle = `rgb(${brightness}, ${brightness}, ${brightness})`;
+        ctx.fillRect(x, y, 2, 2);
+      }
+
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener("resize", resize);
+    resize();
+    drawStars();
   </script>
 
 </body>
