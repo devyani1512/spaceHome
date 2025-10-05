@@ -31,30 +31,87 @@ const inventories = {
       name: "Life Support",
       isCategory: true,
       subItems: [
-        { name: "Oxygen Recycler", energy: 10, power: 4, cost: 20, imgSrc: 'placeholder1.jpg', info: { description: "Recycles CO2 into breathable oxygen.", specs: ["Efficiency: 95%"], benefits: ["Constant air supply"] } },
-        { name: "Water Filtration", energy: 10, power: 3, cost: 15, imgSrc: 'placeholder2.jpg', info: { description: "Purifies wastewater for reuse.", specs: ["Filtration Rate: 50L/hr"], benefits: ["Conserves water"] } },
-        { name: "Waste Management", energy: 10, power: 3, cost: 15, imgSrc: 'placeholder3.jpg', info: { description: "Processes solid and organic waste.", specs: ["Compaction Ratio: 10:1"], benefits: ["Reduces waste volume"] } }
+        { name: "Star-Node Model", volume: 112.9, power: 4, mass: 14620 , imgSrc:'images/star_node.png', info: { description: "This model contains a CORE (Main ECLSS system) and  STARs (Plug-in ECLSSs). CORE contains all the life-supporting mechanisms and is the main life-support system. STARs do not have all mechanisms for long-term life support but can be plugged into the NODE to be recharged when needed.", Source: ["Howe, A. Scott. "A modular habitation system for human planetary and space exploration." 45th International Conference on Environmental Systems, 2015."]} },
+        { name: "ISRU Model", volume: 11.7, power: 4500, mass: 2134 , imgSrc: 'images/isru_system.png', info: { description: "For a lunar habitat, ISRU offers a way to reduce reliance on Earth resupply by using local resources. Lunar ice deposits can be extracted and turned into water for drinking, oxygen generation, or integration with regenerative systems. Oxygen can also be produced from regolith. These methods could operate either alongside regenerative life support or as consumables in an open-loop system.", Source: ["Kessler, Paul, et al. "Artemis deep space habitation: Enabling a sustained human presence on the moon and beyond." 2022 IEEE Aerospace Conference (AERO). IEEE, 2022."] } },
+        { name: "Regen Model", volume: 9.3, power: 3700, mass: 2423 , imgSrc: 'images/regen_system.png', info: { description: "Regen systems aim to form an almost closed-loop ECLSS. These systems rely on bio waste generated and wastewater offloaded to minimise their dependence on resupply of materials. Traditional forms of regen systems have been used on the ISS for years and have proven their mettle.", Source: ["Bryant, Zach, Andrew Choate, and David Howard. "Environmental Control and Life Support (ECLS) System Options for Mars Transit and Mars Surface Missions." 2023 International Conference on Environmental Systems, 2023."] } }
       ]
     },
-    { name: "Thermal Support", energy: 15, power: 5, cost: 25, imgSrc: 'placeholder2.jpg', info: { description: "Maintains optimal temperature.", specs: ["Active Cooling Systems"], benefits: ["Protects electronics"] } },
-    { name: "Power Sources", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder3.jpg', info: { description: "Provides power for all station systems.", specs: ["Solar Arrays"], benefits: ["Reliable energy"] } },
-    { name: "Power Storage", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder4.jpg', info: { description: "Stores reserve power.", specs: ["Battery Banks"], benefits: ["Backup power"] } },
-    { name: "Comm System", energy: 20, power: 25, cost: 35, imgSrc: 'placeholder5.jpg', info: { description: "Allows communication.", specs: ["High-gain Antenna"], benefits: ["Connects to Earth"] } }
-  ],
+    { 
+      name: "Thermal Support",
+      isCategory: true,
+      subItems: [
+        { name: "Thermal Control System", volume: 4, power: 3840, mass: 12000 , imgSrc:'images/tcs.png', info: { description: "Thermal Control System collects heat inside the habitat, transfers it through two fluid loops, and releases it into space using large radiator panels. During long cold nights without sunlight, the radiators can fold up, heaters and fuel cells help keep things warm, and special insulation reduces heat loss. It ensures astronauts stay safe and equipment works properly.", Source: ["Schunk, R. Gregory, Stephanie D. Babiak, and Brian W. Evans. "Thermal control system architecture and technology challenges for a lunar surface habitat." 2022 IEEE Aerospace Conference (AERO). IEEE, 2022."]} }
+        ]
+    },
+    { 
+      name: "Power Sources",
+      isCategory: true,
+      subItems: [
+        { name: "KiloPower Reactors", volume: 2.35, power_gen: 40000, mass: 6000 , imgSrc:'images/kilopower_reactors.png', info: { description: "The Kilopower reactor concept is one of the simplest space power reactor concepts ever proposed. The basic Kilopower reactor components are fuel, heat pipes, control, reflector, and shield. Kilopower reactors should also be very reliable with respect to launch and landing loads. A solid block of fuel eliminates potential fuel-pin and grid plate movements.", Source: ["Poston, David I., Marc Gibson, and Patrick McClure. "Kilopower reactors for potential space exploration missions." Nuclear and Emerging Technologies for Space 2019, NETS-2019 (2019)."]} },
+        { name: "Solar Farm", volume: 3, power_gen:7795, 4500, mass: 60 , power:40800 ,imgSrc: 'images/solar_array.png', info: { description: "For a lunar habitat, ISRU offers a way to reduce reliance on Earth resupply by using local resources. Lunar ice deposits can be extracted and turned into water for drinking, oxygen generation, or integration with regenerative systems. Oxygen can also be produced from regolith. These methods could operate either alongside regenerative life support or as consumables in an open-loop system.", Source: ["Kotedadi, Abhirama Rai, and Neelesh Ranjan Saxena. "Power Generation System For Lunar Habitat." Human Space Flight: Technology (2019).
+"] } },
+        { name: "Thermo-Electric Generator", volume: 2.63, power_gen: 7795, mass: 18080, power:274900 , imgSrc: 'images/teg_array.png', info: { description: "Regen systems aim to form an almost closed-loop ECLSS. These systems rely on bio waste generated and wastewater offloaded to minimise their dependence on resupply of materials. Traditional forms of regen systems have been used on the ISS for years and have proven their mettle.", Source: ["Kotedadi, Abhirama Rai, and Neelesh Ranjan Saxena. "Power Generation System For Lunar Habitat." Human Space Flight: Technology (2019).
+"] } }
+      ]
+    },
+    { 
+      name: "Power Storage",
+      isCategory: true,
+      SubItems: [
+        { name: "Li-Ion Batteries", volume: 10.24, mass: 4000, power_store:10000, imgSrc:'images/li-ion_batteries.png', info: { description: "Batteries provide a reliable way of storing energy, and recent developments have improved safety concerning batteries. Li-Ion batteries have very high energy density, reliability, and long shelf life. However, for applications such as manned lunar outposts that demand several thousand kilowatts of energy storage, batteries can be bulky as primary storage systems", Source: ["Kotedadi, Abhirama Rai, and Neelesh Ranjan Saxena. "Power Generation System For Lunar Habitat." Human Space Flight: Technology (2019)."]} },
+        { name: "Fuel Cells", volume: 3.25, mass: 16000 , power_store:10000 ,imgSrc: 'images/he-ion batteries.png', info: { description: "Fuel cells can store a large amount of energy(high energy density) in contrast to batteries. Closed-loop regenerative fuel cells can use energy from solar panels or thermo-electric generators to split water into hydrogen and oxygen and store it in tanks. When there is a need for electricity, they can fuse hydrogen and oxygen again to get water in a closed-loop [6]. This system does not demand a continuous supply of water and can utilise the frozen water available around the crater.
+", Source: ["Kotedadi, Abhirama Rai, and Neelesh Ranjan Saxena. "Power Generation System For Lunar Habitat." Human Space Flight: Technology (2019).
+"] } }
+        ]
+    }, 
+    {
+      name: "Comm System",
+      isCategory: true,
+      subItems: [
+        { name: "Gateway System", volume: 0.15, power: 450, mass: 40 , imgSrc:'images/gateway_system_module.png', info: { description: "The Gateway acts like a cell tower in lunar orbit, keeping astronauts, rovers, and surface habitats connected to Earth. Even in rugged terrain at the south pole, crews can send video, science data, and voice back home by bouncing it through the Gateway’s relay links.", Source: ["Farkasvölgyi, Andrea, László Csurgai‐Horváth, and Petr Boháček. "The evolution of lunar communication—From the beginning to the present." International Journal of Satellite Communications and Networking 42.3 (2024): 200-216."]} },
+        { name: "LCBN System", volume: 50, power: 710, mass: 180 , imgSrc: 'images/malpert_mountain_thingy.png', info: { description: "Lunar Base Communication and Navigation System using a relay station at Malapert Mountain for near-constant Earth visibility. High-data Ka-band links, S-band backups, and optical links ensure robust communications between the lunar base, rovers, and Earth.", Source: ["Qaise, Omar, Juergen Schlutz, and Aline Zimmer. "Operational design considerations of a polar lunar base communications and Navigation System." SpaceOps 2010 Conference Delivering on the Dream Hosted by NASA Marshall Space Flight Center and Organized by AIAA. 2010.
+"] } },
+  ]
+    }]
+    
   "Crew Chambers": [
-    { name: "Eclipse private berths", energy: 2, power: 1, cost: 5, imgSrc: "images/eclipse_berth.png", info: { description: "Compact sleeping quarters for two crew members.", specs: ["Integrated lighting", "Personal storage lockers"], benefits: ["Space-saving design", "Rest and privacy"] } },
-    { name: "ISS crew chambers", energy: 5, power: 3, cost: 10, imgSrc: "placeholder1.jpg", info: { description: "A workstation for personal tasks and communication.", specs: ["High-speed data link", "Holoscreen display"], benefits: ["Crew connectivity", "Entertainment and work"] } },
-    { name: "Small crew chambers", energy: 8, power: 5, cost: 15, imgSrc: "placeholder1.jpg", info: { description: "An area with games and media for crew morale.", specs: ["Virtual reality console", "Audio system"], benefits: ["Boosts morale", "Reduces stress"] } }
+    { name: "Eclipse private berths", volume: 5.43, power: 225, mass: 284.75 , imgSrc: "images/eclipse_berth.png", info: { description: "Designed for four crew, the chamber includes compact private berths with stowage and water-bag radiation shielding. A central fold-out table serves as a social hub for meals, work, and downtime, fostering cohesion in the isolated environment.", Source: ["Akin, David, et al. "ECLIPSE: Design of a Minimum Functional Habitat for Initial Lunar Exploration." AIAA SPACE 2009 Conference & Exposition. 2009.
+"] } },
+    { name: "ISS crew chambers", volume: 2.1 , power: 225, mass: 379, imgSrc: "images/iss_crew_quarters.png", info: { description: "  International Space Station (ISS) crew quarters are the largest US crew quarters flown to date, with a volume of 2.1m3 (74.2ft³). Unlike earlier versions on Skylab or the Space Shuttle, they are designed for private use beyond just sleep, allowing crew to set up computers and add personal items. Despite their size, they are still smaller than the minimum standards for US jail cells.
+", Source: ["Litaker, Harry L., and Robert L. Howard. "Viability of Small Dimension Crew Quarters for Surface Habitation." 2022 IEEE Aerospace Conference (AERO). IEEE, 2022."]} },
+    { name: "Small crew chambers", volume: 5.43, power: 140, mass: 190, imgSrc: "images/small_crew_quarters.png", info: { description: "The small crew quarters are experimental, compact living spaces designed for future space missions with significant mass and volume constraints. Prototypes were developed to test the viability of including capabilities like sleeping, working, and storage in a minimal footprint. Simplified versions were later installed in a vacuum chamber for a multi-day test to collect data on their acceptability for future surface habitats", Source: ["Litaker, Harry L., and Robert L. Howard. "Viability of Small Dimension Crew Quarters for Surface Habitation." 2022 IEEE Aerospace Conference (AERO). IEEE, 2022."] } }
   ],
+    
   "Medbay": [
-    { name: "ARED", energy: 20, power: 10, cost: 30, imgSrc: "placeholder1.jpg", info: { description: "Advanced full-body diagnostic scanner for crew health monitoring.", specs: ["3D imaging capability", "Real-time vital signs"], benefits: ["Early disease detection", "Non-invasive scanning"] } },
-    { name: "CAGE", energy: 5, power: 2, cost: 15, imgSrc: "placeholder1.jpg", info: { description: "Portable automated external defibrillator for cardiac emergencies.", specs: ["Voice-guided operation", "Biphasic waveform"], benefits: ["Life-saving intervention", "Easy to operate"] } },
-    { name: "Crew chambers", energy: 25, power: 15, cost: 50, imgSrc: "placeholder1.jpg", info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } },
-    { name: "Common Habitat MCF", energy: 25, power: 15, cost: 50, imgSrc: "placeholder1.jpg", info: { description: "A device for accelerated healing of minor injuries.", specs: ["Cellular Stimulators", "Nutrient Delivery System"], benefits: ["Rapid recovery", "Reduces need for surgery"] } }
-  ],
+    {
+      name: "Excercise & Rejuvenation",
+      isCategory: true,
+      subItems: [
+        { name: "ARED", volume: 3.31, power: 6 , mass: 300 , imgSrc:'images/excercise_thingy.png', info: { description: "The Advanced Resistive Exercise Device (ARED) is a robust exercise machine on the ISS that simulates free-weight lifting in microgravity using vacuum cylinders and flywheels. It provides adjustable resistance of up to 600+ pounds through a lift bar or cable assembly, and a touch screen helps astronauts follow personalised exercise plans", Source: [""]} },
+        { name: "Cage", volume: 2.2, power: 300, mass: 250 , imgSrc: 'images/isru_system.png', info: { description: "CAGE (Combined Artificial Gravity and Exercise) is a spacecraft-compatible centrifuge + squat module system designed to mitigate physiological decline during long-duration missions. It applies artificial gravity via rotation, inducing a downward fluid shift, while a built-in squat exercise setup at the rim enables simultaneous resistance training. The squatting motion partially drives the centrifuge, reducing power demands. It aims to halve current exercise time by combining multiple countermeasures in one device, improving efficiency and freeing time for science/operations.", Source: ["Divsalar, D. N., Sadeghian, F., Burville, K., Tremblay, M. F., Thomas, J., Richter, S., & Blaber, A. P. (2022). “A spacecraft-compatible combined artificial gravity and exercise (CAGE) system to sustain astronaut health in the next generation of long-term spaceflight.” Journal of Space Safety Engineering."] } },
+         ]
+    },
+    { 
+      name: "Medical support System",
+      isCategory: true,
+      subItems: [
+        { name: "Use Crew Chambers", volume: 1.6, mass: 104 , imgSrc:'images/tcs.png', info: { description: "First option for medical care in habitat is to use the crew quarters as a medical facility when needed. Extra stowage can be provided for medical supplies. However, this approach can only be viable for a small crew and might cause hygiene problems", Source: ["Howard Jr, Robert L., and Brady T. Campbell. "Configuration and Projected Capabilities of the Common Habitat Medical Care Facility." 2024 HRP Investigators' Workshop. 2024."
+                                                                                                                                                                                                                                                                                                                                                                                ]} },
+        { name: "Common Habitat MCF", volume: 18, power: 2545, mass: 455 , imgSrc:'images/tcs.png', info: { description: " MCF is an enlarged and upgraded medical bay for long-duration space missions, designed with input from a combat medic to provide a higher level of care when evacuation is impossible. It features advanced portable equipment, such as an X-ray machine, and a mobile surgical stretcher-chair for improved patient transport and treatment.", Source: ["Howard Jr, Robert L., and Brady T. Campbell. "Configuration and Projected Capabilities of the Common Habitat Medical Care Facility." 2024 HRP Investigators' Workshop. 2024."
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ]} }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                                                                                                
+        ]
+    },   
+
   "Food Galley": [
-    { name: "Food Stowage", energy: 15, power: 10, cost: 30, imgSrc: "placeholder1.jpg", info: { description: "Creates pre-packaged meals from nutrient paste.", specs: ["Automated dispenser", "Recipe database"], benefits: ["Efficient food preparation", "Wide variety of meals"] } },
-    { name: "Food prep", energy: 5, power: 2, cost: 10, imgSrc: "placeholder1.jpg", info: { description: "Provides hot and cold potable water.", specs: ["Integrated filtration", "Temperature control"], benefits: ["Hydration for crew", "Reduces waste"] } }
+    {
+      name: "Food Stowage",
+      isCategory: true,
+      subItems: [
+        {name: "ISS Bags", Volume: 15, mass: 30, imgSrc: "images/iss_food_bags.png", info: { description: "First option for medical care in habitat is to use the crew quarters as a medical facility when needed. Extra stowage can be provided for medical supplies. However, this approach can only be viable for a small crew and might cause hygiene problems"} },
+        {name: "Orion stowage sys", Volume: 6 , mass: 30, imgSrc: "images/iss_food_bags.png", info: { description: "First option for medical care in habitat is to use the crew quarters as a medical facility when needed. Extra stowage can be provided for medical supplies. However, this approach can only be viable for a small crew and might cause hygiene problems"} }
+    { name: "Food prep", energy: 5, power: 2, cost: 10, imgSrc: "images/.jpg", info: { description: "Provides hot and cold potable water.", specs: ["Integrated filtration", "Temperature control"], benefits: ["Hydration for crew", "Reduces waste"] } }
   ],
   "Waste Management": [
     { name: "AstroYeast", energy: 10, power: 5, cost: 20, imgSrc: "placeholder1.jpg", info: { description: "Crushes and recycles solid waste into compact bricks.", specs: ["Hydraulic press", "Recycling processor"], benefits: ["Reduces volume of waste", "Recycles materials"] } },
@@ -68,7 +125,7 @@ const inventories = {
   ]
 };
 
-let bgImg;
+let bgImg
 let confirmBtn, finalizeBtn, newRoomBtn, reformBtn;
 let floorColor = [120, 200, 255, 180];
 let wallColor = [30, 50, 120, 220];
