@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artemis Mission Overview</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #0d1117;
+      color: white;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* ===== Base Section Style ===== */
+    .section {
+      position: relative;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 700px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: all 0.5s ease-in-out;
+    }
+
+    .section img {
+      width: 100%;
+      display: block;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .section-title {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    .arrow {
+      position: absolute;
+      right: 20px;
+      bottom: 15px;
+      font-size: 1.5em;
+      cursor: pointer;
+      transition: transform 0.3s;
+      user-select: none;
+    }
+
+    /* ===== Overlay (Full Page Expand) ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 40px;
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    .overlay-content {
+      max-width: 800px;
+      text-align: left;
+      background: #161b22;
+      border-radius: 15px;
+      padding: 30px;
+      line-height: 1.6;
+      position: relative;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .overlay-content h2 {
+      margin-top: 0;
+      color: #58a6ff;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.8em;
+      cursor: pointer;
+      color: white;
+      background: none;
+      border: none;
+      transition: transform 0.2s;
+    }
+
+    .close-btn:hover {
+      transform: scale(1.1);
+      color: #58a6ff;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Artemis Mission Timeline Section -->
+  <div class="section">
+    <img src="0a2eb560-ff83-4159-8c37-375f2b278189.png" alt="Artemis Mission Timeline">
+    <div class="section-title">Artemis Mission Timeline</div>
+    <div class="arrow" onclick="openOverlay('timeline')">➤</div>
+  </div>
+
+  <!-- Artemis Mission Projects Section -->
+  <div class="section">
+    <img src="0a2eb560-ff83-4159-8c37-375f2b278189.png" alt="Artemis Mission Projects">
+    <div class="section-title">Artemis Mission Projects</div>
+    <div class="arrow" onclick="openOverlay('projects')">➤</div>
+  </div>
+
+  <!-- ===== Overlays ===== -->
+
+  <!-- Timeline Overlay -->
+  <div class="overlay" id="timeline-overlay">
+    <div class="overlay-content">
+      <button class="close-btn" onclick="closeOverlay('timeline')">✕</button>
+      <h2>Artemis Mission Timeline</h2>
+      <p>
+        The Artemis Mission Timeline details key milestones from Artemis I through Artemis IV, 
+        outlining NASA’s path to returning humans to the Moon. It includes critical phases such as:
+      </p>
+      <ul>
+        <li><strong>Artemis I:</strong> Uncrewed test flight to lunar orbit (completed successfully)</li>
+        <li><strong>Artemis II:</strong> First crewed mission around the Moon</li>
+        <li><strong>Artemis III:</strong> Lunar landing with the first woman and person of color</li>
+        <li><strong>Artemis IV:</strong> Gateway module assembly for long-term lunar presence</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Projects Overlay -->
+  <div class="overlay" id="projects-overlay">
+    <div class="overlay-content">
+      <button class="close-btn" onclick="closeOverlay('projects')">✕</button>
+      <h2>Artemis Mission Projects</h2>
+      <p>
+        The Artemis program involves multiple international and industrial collaborations that 
+        integrate technologies for sustainable space exploration. Major projects include:
+      </p>
+      <ul>
+        <li><strong>Orion Spacecraft:</strong> Deep-space crew module for lunar missions.</li>
+        <li><strong>SLS Rocket:</strong> Most powerful rocket built for human spaceflight.</li>
+        <li><strong>Lunar Gateway:</strong> Modular space station orbiting the Moon.</li>
+        <li><strong>Human Landing System:</strong> Designed for safe and reusable Moon landings.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function openOverlay(type) {
+      document.getElementById(`${type}-overlay`).style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // prevent scrolling
+    }
+
+    function closeOverlay(type) {
+      document.getElementById(`${type}-overlay`).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  </script>
+
+</body>
+</html>
